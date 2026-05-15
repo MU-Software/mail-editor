@@ -1,0 +1,447 @@
+import {
+  FormatBold,
+  FormatColorText,
+  FormatItalic,
+  FormatStrikethrough,
+  FormatUnderlined,
+  Highlight as HighlightIcon,
+  Link as LinkIcon,
+  type SvgIconComponent,
+} from '@mui/icons-material'
+import {
+  Box,
+  Button,
+  Menu,
+  Stack,
+  type SxProps,
+  type Theme,
+} from '@mui/material'
+import { Color } from '@tiptap/extension-color'
+import HighlightExt from '@tiptap/extension-highlight'
+import LinkExt from '@tiptap/extension-link'
+import { TextStyle } from '@tiptap/extension-text-style'
+import UnderlineExt from '@tiptap/extension-underline'
+import {
+  Editor,
+  EditorContent,
+  Extension,
+  useEditor,
+  useEditorState,
+} from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { TooltipIconButton } from '../components/TooltipIconButton'
+import {
+  validateHref,
+  validateVariableMarkIntegrity,
+} from '../utils/validation'
+
+const DEFAULT_COLOR = '#000000'
+const DEFAULT_HIGHLIGHT = '#fff7a8'
+
+function normalize(html: string): string {
+  return html
+    .replace(/<\/p>\s*<p>/g, '<br>')
+    .replace(/^<p>(.*?)<\/p>\s*$/s, '$1')
+}
+
+function runWithIntegrity(editor: Editor, apply: () => void) {
+  const before = normalize(editor.getHTML())
+  apply()
+  const after = normalize(editor.getHTML())
+  if (before === after) return
+  const result = validateVariableMarkIntegrity(after)
+  if (!result.ok) {
+    editor.commands.undo()
+    window.alert(result.message)
+  }
+}
+
+const ValidatedFormatShortcuts = Extension.create({
+  name: 'validatedFormatShortcuts',
+  priority: 1000,
+  addKeyboardShortcuts() {
+    return {
+      'Mod-b': () => {
+        runWithIntegrity(this.editor, () =>
+          this.editor.chain().focus().toggleBold().run(),
+        )
+        return true
+      },
+      'Mod-i': () => {
+        runWithIntegrity(this.editor, () =>
+          this.editor.chain().focus().toggleItalic().run(),
+        )
+        return true
+      },
+      'Mod-u': () => {
+        runWithIntegrity(this.editor, () =>
+          this.editor.chain().focus().toggleUnderline().run(),
+        )
+        return true
+      },
+      'Mod-Shift-x': () => {
+        runWithIntegrity(this.editor, () =>
+          this.editor.chain().focus().toggleStrike().run(),
+        )
+        return true
+      },
+    }
+  },
+})
+
+export function InlineTextEditor({
+  initialHtml,
+  onCommit,
+  onChange,
+  onCancel,
+  style,
+  contentSx,
+  toolbarPosition = 'floating',
+}: {
+  initialHtml: string
+  onCommit: (html: string) => void
+  onChange?: (html: string) => void
+  onCancel: () => void
+  style?: CSSProperties
+  contentSx?: SxProps<Theme>
+  toolbarPosition?: 'floating' | 'inline'
+}) {
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
+        blockquote: false,
+        codeBlock: false,
+        code: false,
+        horizontalRule: false,
+        heading: false,
+        link: false,
+      }),
+      UnderlineExt,
+      TextStyle,
+      Color,
+      HighlightExt.configure({ multicolor: true }),
+      LinkExt.configure({ openOnClick: false }),
+      ValidatedFormatShortcuts,
+    ],
+    content: `<p>${initialHtml}</p>`,
+    autofocus: 'end',
+  })
+
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+
+  useEffect(() => {
+    if (!editor) return
+    const dom = editor.view.dom
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
+        onCommit(normalize(editor.getHTML()))
+      } else if (e.key === 'Escape') {
+        e.preventDefault()
+        onCancel()
+      }
+    }
+    const onBlur = ({ event }: { event: FocusEvent }) => {
+      const next = event.relatedTarget as HTMLElement | null
+      if (next?.closest('[data-mail-toolbar]')) return
+      onCommit(normalize(editor.getHTML()))
+    }
+    const onUpdate = () => {
+      onChangeRef.current?.(normalize(editor.getHTML()))
+    }
+    dom.addEventListener('keydown', onKey)
+    editor.on('blur', onBlur)
+    editor.on('update', onUpdate)
+    return () => {
+      dom.removeEventListener('keydown', onKey)
+      editor.off('blur', onBlur)
+      editor.off('update', onUpdate)
+    }
+  }, [editor, onCommit, onCancel])
+
+  const marks = useEditorState({
+    editor,
+    selector: ({ editor }) => ({
+      bold: editor?.isActive('bold') ?? false,
+      italic: editor?.isActive('italic') ?? false,
+      underline: editor?.isActive('underline') ?? false,
+      strike: editor?.isActive('strike') ?? false,
+      link: editor?.isActive('link') ?? false,
+      color: (editor?.getAttributes('textStyle').color as string | undefined) ?? null,
+      highlight:
+        (editor?.getAttributes('highlight').color as string | undefined) ?? null,
+    }),
+  })
+
+  if (!editor) return null
+
+  const activeBtnSx = (active: boolean) => ({
+    background: active ? 'rgba(74, 158, 255, 0.18)' : undefined,
+    '&:hover': {
+      background: active
+        ? 'rgba(74, 158, 255, 0.28)'
+        : 'rgba(0, 0, 0, 0.04)',
+    },
+  })
+
+  const toggleBold = () =>
+    runWithIntegrity(editor, () => editor.chain().focus().toggleBold().run())
+
+  const toggleItalic = () =>
+    runWithIntegrity(editor, () =>
+      editor.chain().focus().toggleItalic().run(),
+    )
+
+  const toggleUnderline = () =>
+    runWithIntegrity(editor, () =>
+      editor.chain().focus().toggleUnderline().run(),
+    )
+
+  const toggleStrike = () =>
+    runWithIntegrity(editor, () =>
+      editor.chain().focus().toggleStrike().run(),
+    )
+
+  const setColor = (color: string) =>
+    runWithIntegrity(editor, () =>
+      editor.chain().focus().setColor(color).run(),
+    )
+
+  const unsetColor = () =>
+    runWithIntegrity(editor, () => editor.chain().focus().unsetColor().run())
+
+  const setHighlight = (color: string) =>
+    runWithIntegrity(editor, () =>
+      editor.chain().focus().setHighlight({ color }).run(),
+    )
+
+  const unsetHighlight = () =>
+    runWithIntegrity(editor, () =>
+      editor.chain().focus().unsetHighlight().run(),
+    )
+
+  const toggleLink = () => {
+    const current = editor.getAttributes('link').href as string | undefined
+    const url = window.prompt('URL', current ?? '')
+    if (url === null) return
+    if (url === '') {
+      runWithIntegrity(editor, () =>
+        editor.chain().focus().unsetLink().run(),
+      )
+      return
+    }
+    const hrefResult = validateHref(url, { required: false })
+    if (!hrefResult.ok) {
+      window.alert(hrefResult.message)
+      return
+    }
+    runWithIntegrity(editor, () =>
+      editor
+        .chain()
+        .focus()
+        .extendMarkRange('link')
+        .setLink({ href: url })
+        .run(),
+    )
+  }
+
+  const floating = toolbarPosition === 'floating'
+  const toolbarSx: SxProps<Theme> = floating
+    ? {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        transform: 'translateY(-100%)',
+        zIndex: 16,
+      }
+    : { mb: 0.5 }
+
+  return (
+    <Box
+      style={style}
+      sx={floating ? { position: 'relative' } : undefined}
+    >
+      <Stack
+        direction="row"
+        spacing={0.25}
+        data-mail-toolbar=""
+        sx={[
+          toolbarSx,
+          {
+            background: 'white',
+            border: '1px solid rgba(0,0,0,0.23)',
+            borderRadius: 0.5,
+            p: 0.25,
+            display: 'inline-flex',
+          },
+        ]}
+        onMouseDown={(e: React.MouseEvent) => e.preventDefault()}
+      >
+        <TooltipIconButton
+          title="굵게 (Cmd+B)"
+          icon={FormatBold}
+          color={marks?.bold ? 'primary' : 'default'}
+          sx={activeBtnSx(marks?.bold ?? false)}
+          onClick={toggleBold}
+        />
+        <TooltipIconButton
+          title="기울임 (Cmd+I)"
+          icon={FormatItalic}
+          color={marks?.italic ? 'primary' : 'default'}
+          sx={activeBtnSx(marks?.italic ?? false)}
+          onClick={toggleItalic}
+        />
+        <TooltipIconButton
+          title="밑줄 (Cmd+U)"
+          icon={FormatUnderlined}
+          color={marks?.underline ? 'primary' : 'default'}
+          sx={activeBtnSx(marks?.underline ?? false)}
+          onClick={toggleUnderline}
+        />
+        <TooltipIconButton
+          title="취소선 (Cmd+Shift+X)"
+          icon={FormatStrikethrough}
+          color={marks?.strike ? 'primary' : 'default'}
+          sx={activeBtnSx(marks?.strike ?? false)}
+          onClick={toggleStrike}
+        />
+        <ColorPickerButton
+          title="글자색"
+          icon={FormatColorText}
+          activeColor={marks?.color ?? null}
+          defaultColor={DEFAULT_COLOR}
+          activeBtnSx={activeBtnSx}
+          onSet={setColor}
+          onClear={unsetColor}
+        />
+        <ColorPickerButton
+          title="형광펜"
+          icon={HighlightIcon}
+          activeColor={marks?.highlight ?? null}
+          defaultColor={DEFAULT_HIGHLIGHT}
+          activeBtnSx={activeBtnSx}
+          onSet={setHighlight}
+          onClear={unsetHighlight}
+        />
+        <TooltipIconButton
+          title="링크"
+          icon={LinkIcon}
+          color={marks?.link ? 'primary' : 'default'}
+          sx={activeBtnSx(marks?.link ?? false)}
+          onClick={toggleLink}
+        />
+      </Stack>
+      <Box
+        sx={{
+          outline: '2px solid #4a9eff',
+          outlineOffset: '-2px',
+          background: 'rgba(74, 158, 255, 0.05)',
+          '& .ProseMirror': { outline: 'none', minHeight: '1em' },
+          '& .ProseMirror p': { margin: 0 },
+          ...contentSx,
+        }}
+      >
+        <EditorContent editor={editor} />
+      </Box>
+    </Box>
+  )
+}
+
+function ColorPickerButton({
+  title,
+  icon,
+  activeColor,
+  defaultColor,
+  activeBtnSx,
+  onSet,
+  onClear,
+}: {
+  title: string
+  icon: SvgIconComponent
+  activeColor: string | null
+  defaultColor: string
+  activeBtnSx: (active: boolean) => SxProps<Theme>
+  onSet: (color: string) => void
+  onClear: () => void
+}) {
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const active = activeColor !== null
+  const swatch = activeColor ?? defaultColor
+
+  return (
+    <>
+      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+        <TooltipIconButton
+          title={title}
+          icon={icon}
+          color={active ? 'primary' : 'default'}
+          sx={activeBtnSx(active)}
+          onClick={(e: React.MouseEvent<HTMLElement>) =>
+            setAnchorEl(e.currentTarget)
+          }
+        />
+        <Box
+          aria-hidden
+          sx={{
+            position: 'absolute',
+            left: 6,
+            right: 6,
+            bottom: 4,
+            height: 3,
+            borderRadius: 0.5,
+            background: swatch,
+            border: '1px solid rgba(0,0,0,0.15)',
+            pointerEvents: 'none',
+          }}
+        />
+      </Box>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+        disableAutoFocus
+        disableEnforceFocus
+        disableRestoreFocus
+        slotProps={{
+          paper: {
+            sx: { p: 1 },
+            ...({ 'data-mail-toolbar': '' } as Record<string, string>),
+          },
+        }}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <input
+            type="color"
+            value={activeColor ?? defaultColor}
+            onChange={(e) => onSet(e.target.value)}
+            style={{
+              width: 36,
+              height: 36,
+              border: '1px solid rgba(0,0,0,0.23)',
+              borderRadius: 4,
+              padding: 0,
+              cursor: 'pointer',
+              background: 'transparent',
+            }}
+          />
+          <Button
+            size="small"
+            variant="outlined"
+            disabled={!active}
+            onClick={() => {
+              onClear()
+              setAnchorEl(null)
+            }}
+          >
+            지우기
+          </Button>
+        </Stack>
+      </Menu>
+    </>
+  )
+}

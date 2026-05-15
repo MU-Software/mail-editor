@@ -49,25 +49,7 @@ export type AppProps = {
   onExport?: (html: string) => void | Promise<void>
 }
 
-const HEADER_DARK_SX = {
-  background: '#2a2a2a',
-  color: '#aaa',
-  borderBottom: '1px solid #000',
-}
-
-const HEADER_LIGHT_SX = {
-  background: '#ddd',
-  color: '#555',
-  borderBottom: '1px solid #ccc',
-}
-
-function PaneHeader({
-  children,
-  variant = 'dark',
-}: {
-  children: React.ReactNode
-  variant?: 'dark' | 'light'
-}) {
+function PaneHeader({ children }: { children: React.ReactNode }) {
   return (
     <Stack
       direction="row"
@@ -80,7 +62,9 @@ function PaneHeader({
         fontSize: 12,
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
         flexShrink: 0,
-        ...(variant === 'dark' ? HEADER_DARK_SX : HEADER_LIGHT_SX),
+        background: '#ddd',
+        color: '#555',
+        borderBottom: '1px solid #ccc',
       }}
     >
       {children}
@@ -150,21 +134,19 @@ export function App({ onExport }: AppProps) {
     }
   }
 
-  const handleJsonImport = () => {
-    closeMenu()
-    setImportOpen(true)
-  }
-
-  const handleJsonExport = () => {
-    closeMenu()
-    setExportOpen(true)
-  }
-
   const togglePanel = (ref: React.RefObject<PanelImperativeHandle | null>) => () => {
     const p = ref.current
     if (!p) return
     if (p.isCollapsed()) p.expand()
     else p.collapse()
+  }
+
+  const trackCollapsed = (
+    ref: React.RefObject<PanelImperativeHandle | null>,
+    setter: (next: boolean) => void,
+  ) => () => {
+    const c = ref.current?.isCollapsed() ?? false
+    setter(c)
   }
 
   return (
@@ -178,7 +160,7 @@ export function App({ onExport }: AppProps) {
       >
         <Panel id="main" defaultSize={75} minSize={40}>
           <Stack sx={{ height: '100%', background: '#f4f4f4' }}>
-            <PaneHeader variant="light">
+            <PaneHeader>
               <span>editor</span>
               <Stack direction="row" spacing={1}>
                 <Button
@@ -216,13 +198,23 @@ export function App({ onExport }: AppProps) {
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                 >
-                  <MenuItem onClick={handleJsonImport}>
+                  <MenuItem
+                    onClick={() => {
+                      closeMenu()
+                      setImportOpen(true)
+                    }}
+                  >
                     <ListItemIcon>
                       <FileUpload fontSize="small" />
                     </ListItemIcon>
                     <ListItemText>JSON 불러오기</ListItemText>
                   </MenuItem>
-                  <MenuItem onClick={handleJsonExport}>
+                  <MenuItem
+                    onClick={() => {
+                      closeMenu()
+                      setExportOpen(true)
+                    }}
+                  >
                     <ListItemIcon>
                       <Code fontSize="small" />
                     </ListItemIcon>
@@ -262,13 +254,10 @@ export function App({ onExport }: AppProps) {
                   minSize="120px"
                   collapsible
                   collapsedSize="36px"
-                  onResize={() => {
-                    const c = bottomRef.current?.isCollapsed() ?? false
-                    setBottomCollapsed((prev) => (prev === c ? prev : c))
-                  }}
+                  onResize={trackCollapsed(bottomRef, setBottomCollapsed)}
                 >
                   <Stack sx={{ height: '100%' }}>
-                    <PaneHeader variant="light">
+                    <PaneHeader>
                       {bottomCollapsed ? (
                         <Box />
                       ) : (
@@ -323,13 +312,10 @@ export function App({ onExport }: AppProps) {
           minSize="180px"
           collapsible
           collapsedSize="40px"
-          onResize={() => {
-            const c = propsRef.current?.isCollapsed() ?? false
-            setPropsCollapsed((prev) => (prev === c ? prev : c))
-          }}
+          onResize={trackCollapsed(propsRef, setPropsCollapsed)}
         >
           <Stack sx={{ height: '100%', background: 'white' }}>
-            <PaneHeader variant="light">
+            <PaneHeader>
               {!propsCollapsed && <span>속성</span>}
               <TooltipIconButton
                 title={propsCollapsed ? '펼치기' : '접기'}

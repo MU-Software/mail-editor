@@ -1,115 +1,51 @@
-import type {
-  Block,
-  ButtonBlock,
-  Column,
-  DescriptionListBlock,
-  HeadingBlock,
-  HrBlock,
-  ImageBlock,
-  OrderedListBlock,
-  Row,
-  SpacerBlock,
-  TextBlock,
-  UnorderedListBlock,
-} from '../types/schema'
+import type { Block, Column, Row } from '../types/schema'
 import { newId } from './ids'
 
-export function createTextBlock(): TextBlock {
-  return {
-    id: newId('b'),
-    type: 'text',
-    content: '여기에 내용을 입력하세요',
-    styles: { fontSize: 14, lineHeight: 1.5 },
-  }
-}
-
-export function createHeadingBlock(): HeadingBlock {
-  return {
-    id: newId('b'),
-    type: 'heading',
-    level: 2,
-    content: '제목',
-  }
-}
-
-export function createImageBlock(): ImageBlock {
-  return {
-    id: newId('b'),
-    type: 'image',
-    src: 'https://placehold.co/600x300?text=Image',
-    alt: '',
-    width: 600,
-    height: 300,
-  }
-}
-
-export function createButtonBlock(): ButtonBlock {
-  return {
-    id: newId('b'),
-    type: 'button',
-    label: '버튼',
-    href: 'https://example.com',
-  }
-}
-
-export function createHrBlock(): HrBlock {
-  return { id: newId('b'), type: 'hr' }
-}
-
-export function createSpacerBlock(): SpacerBlock {
-  return { id: newId('b'), type: 'spacer', height: 16 }
-}
-
-export function createOrderedListBlock(): OrderedListBlock {
-  return {
-    id: newId('b'),
-    type: 'orderedList',
-    items: ['항목 1', '항목 2', '항목 3'],
-    styles: { fontSize: 14, lineHeight: 1.5 },
-  }
-}
-
-export function createUnorderedListBlock(): UnorderedListBlock {
-  return {
-    id: newId('b'),
-    type: 'unorderedList',
-    items: ['항목 1', '항목 2', '항목 3'],
-    styles: { fontSize: 14, lineHeight: 1.5 },
-  }
-}
-
-export function createDescriptionListBlock(): DescriptionListBlock {
-  return {
-    id: newId('b'),
-    type: 'descriptionList',
-    items: [
-      { term: '용어', description: '정의' },
-      { term: '용어', description: '정의' },
-    ],
-    styles: { fontSize: 14, lineHeight: 1.5 },
-  }
-}
-
 export function createBlock(type: Block['type']): Block {
+  const id = newId('b')
   switch (type) {
     case 'text':
-      return createTextBlock()
+      return {
+        id,
+        type,
+        content: '여기에 내용을 입력하세요',
+        styles: { fontSize: 14, lineHeight: 1.5 },
+      }
     case 'heading':
-      return createHeadingBlock()
+      return { id, type, level: 2, content: '제목' }
     case 'image':
-      return createImageBlock()
+      return {
+        id,
+        type,
+        src: 'https://placehold.co/600x300?text=Image',
+        alt: '',
+        width: 600,
+        height: 300,
+      }
     case 'button':
-      return createButtonBlock()
+      return { id, type, label: '버튼', href: 'https://example.com' }
     case 'hr':
-      return createHrBlock()
+      return { id, type }
     case 'spacer':
-      return createSpacerBlock()
+      return { id, type, height: 16 }
     case 'orderedList':
-      return createOrderedListBlock()
     case 'unorderedList':
-      return createUnorderedListBlock()
+      return {
+        id,
+        type,
+        items: ['항목 1', '항목 2', '항목 3'],
+        styles: { fontSize: 14, lineHeight: 1.5 },
+      }
     case 'descriptionList':
-      return createDescriptionListBlock()
+      return {
+        id,
+        type,
+        items: [
+          { term: '용어', description: '정의' },
+          { term: '용어', description: '정의' },
+        ],
+        styles: { fontSize: 14, lineHeight: 1.5 },
+      }
   }
 }
 
@@ -133,7 +69,7 @@ export function cloneBlockWithNewId(block: Block): Block {
   return { ...block, id: newId('b') }
 }
 
-export function cloneColumnWithNewIds(col: Column): Column {
+function cloneColumnWithNewIds(col: Column): Column {
   return {
     ...col,
     id: newId('c'),

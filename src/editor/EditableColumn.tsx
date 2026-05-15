@@ -1,5 +1,5 @@
 import { Add, ArrowBack, ArrowForward, Build, Close } from '@mui/icons-material'
-import { Box, Stack } from '@mui/material'
+import { Box } from '@mui/material'
 import { Column as EmailColumn } from '@react-email/components'
 import { memo, useState, type MouseEvent } from 'react'
 import { TooltipIconButton } from '../components/TooltipIconButton'
@@ -9,13 +9,9 @@ import type { Block, Column } from '../types/schema'
 import { stopAnd } from '../utils/events'
 import { BlockTypeMenu } from './BlockTypeMenu'
 import { EditableBlock } from './EditableBlock'
+import { HoverToolbar, SelectableShell } from './SelectableShell'
 
 type Sample = Record<string, string>
-
-const colBtnSx = {
-  color: '#4a9eff',
-  '&:hover': { background: '#4a9eff', color: 'white' },
-} as const
 
 function ColumnInsertHandle({
   position,
@@ -86,33 +82,19 @@ export const EditableColumn = memo(function EditableColumn({
 
   return (
     <EmailColumn style={columnTdStyle(column, totalWidth)}>
-      <Box
-        data-column-id={column.id}
-        onClick={(e) => {
-          e.stopPropagation()
-          setSelection({ kind: 'column', id: column.id })
-        }}
-        sx={{
-          position: 'relative',
-          minHeight: 24,
-          padding: columnPadding(column),
-          outline: selected ? '2px solid #4a9eff' : undefined,
-          outlineOffset: selected ? '-2px' : undefined,
-          '&:hover': !selected
-            ? { outline: '1px dashed #4a9eff', outlineOffset: '-1px' }
-            : undefined,
-          '&:hover > .column-controls': { display: 'flex' },
-          '&:hover > .column-insert': { display: 'flex' },
-        }}
+      <SelectableShell
+        kind="column"
+        id={column.id}
+        selected={selected}
+        outlineOffset="-2px"
+        hoverOutline="1px dashed #4a9eff"
+        hoverOutlineOffset="-1px"
+        hoverReveals={['column-controls', 'column-insert']}
+        sx={{ minHeight: 24, padding: columnPadding(column) }}
       >
-        <Stack
-          direction="row"
+        <HoverToolbar
           className="column-controls"
-          alignItems="center"
-          onClick={(e) => e.stopPropagation()}
           sx={{
-            display: 'none',
-            position: 'absolute',
             top: 0,
             left: 0,
             transform: 'translateY(-50%)',
@@ -127,7 +109,6 @@ export const EditableColumn = memo(function EditableColumn({
           <TooltipIconButton
             title="Column 속성 편집"
             icon={Build}
-            sx={colBtnSx}
             onClick={stopAnd(() => setSelection({ kind: 'column', id: column.id }))}
           />
           {canMoveOrDelete && (
@@ -135,14 +116,12 @@ export const EditableColumn = memo(function EditableColumn({
               <TooltipIconButton
                 title="좌로 이동"
                 icon={ArrowBack}
-                sx={colBtnSx}
                 disabled={isFirst}
                 onClick={stopAnd(() => moveColumn(column.id, 'left'))}
               />
               <TooltipIconButton
                 title="우로 이동"
                 icon={ArrowForward}
-                sx={colBtnSx}
                 disabled={isLast}
                 onClick={stopAnd(() => moveColumn(column.id, 'right'))}
               />
@@ -150,7 +129,6 @@ export const EditableColumn = memo(function EditableColumn({
                 title="Column 삭제"
                 icon={Close}
                 sx={{
-                  ...colBtnSx,
                   color: '#d04',
                   '&:hover': { background: '#d04', color: 'white' },
                 }}
@@ -158,7 +136,7 @@ export const EditableColumn = memo(function EditableColumn({
               />
             </>
           )}
-        </Stack>
+        </HoverToolbar>
         <ColumnInsertHandle
           position="before"
           onSelect={(type) => insertColumnBefore(column.id, type)}
@@ -175,7 +153,7 @@ export const EditableColumn = memo(function EditableColumn({
             canDelete={column.blocks.length > 1}
           />
         ))}
-      </Box>
+      </SelectableShell>
     </EmailColumn>
   )
 })

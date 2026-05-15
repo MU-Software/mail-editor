@@ -57,36 +57,28 @@ function runWithIntegrity(editor: Editor, apply: () => void) {
   }
 }
 
+const FORMAT_SHORTCUTS = {
+  'Mod-b': (c: ReturnType<Editor['chain']>) => c.toggleBold(),
+  'Mod-i': (c: ReturnType<Editor['chain']>) => c.toggleItalic(),
+  'Mod-u': (c: ReturnType<Editor['chain']>) => c.toggleUnderline(),
+  'Mod-Shift-x': (c: ReturnType<Editor['chain']>) => c.toggleStrike(),
+} as const
+
 const ValidatedFormatShortcuts = Extension.create({
   name: 'validatedFormatShortcuts',
   priority: 1000,
   addKeyboardShortcuts() {
-    return {
-      'Mod-b': () => {
-        runWithIntegrity(this.editor, () =>
-          this.editor.chain().focus().toggleBold().run(),
-        )
-        return true
-      },
-      'Mod-i': () => {
-        runWithIntegrity(this.editor, () =>
-          this.editor.chain().focus().toggleItalic().run(),
-        )
-        return true
-      },
-      'Mod-u': () => {
-        runWithIntegrity(this.editor, () =>
-          this.editor.chain().focus().toggleUnderline().run(),
-        )
-        return true
-      },
-      'Mod-Shift-x': () => {
-        runWithIntegrity(this.editor, () =>
-          this.editor.chain().focus().toggleStrike().run(),
-        )
-        return true
-      },
-    }
+    return Object.fromEntries(
+      Object.entries(FORMAT_SHORTCUTS).map(([key, op]) => [
+        key,
+        () => {
+          runWithIntegrity(this.editor, () =>
+            op(this.editor.chain().focus()).run(),
+          )
+          return true
+        },
+      ]),
+    )
   },
 })
 
@@ -189,50 +181,26 @@ export function InlineTextEditor({
     },
   })
 
-  const toggleBold = () =>
-    runWithIntegrity(editor, () => editor.chain().focus().toggleBold().run())
+  const runFormat = (
+    op: (c: ReturnType<Editor['chain']>) => ReturnType<Editor['chain']>,
+  ) => runWithIntegrity(editor, () => op(editor.chain().focus()).run())
 
-  const toggleItalic = () =>
-    runWithIntegrity(editor, () =>
-      editor.chain().focus().toggleItalic().run(),
-    )
-
-  const toggleUnderline = () =>
-    runWithIntegrity(editor, () =>
-      editor.chain().focus().toggleUnderline().run(),
-    )
-
-  const toggleStrike = () =>
-    runWithIntegrity(editor, () =>
-      editor.chain().focus().toggleStrike().run(),
-    )
-
-  const setColor = (color: string) =>
-    runWithIntegrity(editor, () =>
-      editor.chain().focus().setColor(color).run(),
-    )
-
-  const unsetColor = () =>
-    runWithIntegrity(editor, () => editor.chain().focus().unsetColor().run())
-
+  const toggleBold = () => runFormat((c) => c.toggleBold())
+  const toggleItalic = () => runFormat((c) => c.toggleItalic())
+  const toggleUnderline = () => runFormat((c) => c.toggleUnderline())
+  const toggleStrike = () => runFormat((c) => c.toggleStrike())
+  const setColor = (color: string) => runFormat((c) => c.setColor(color))
+  const unsetColor = () => runFormat((c) => c.unsetColor())
   const setHighlight = (color: string) =>
-    runWithIntegrity(editor, () =>
-      editor.chain().focus().setHighlight({ color }).run(),
-    )
-
-  const unsetHighlight = () =>
-    runWithIntegrity(editor, () =>
-      editor.chain().focus().unsetHighlight().run(),
-    )
+    runFormat((c) => c.setHighlight({ color }))
+  const unsetHighlight = () => runFormat((c) => c.unsetHighlight())
 
   const toggleLink = () => {
     const current = editor.getAttributes('link').href as string | undefined
     const url = window.prompt('URL', current ?? '')
     if (url === null) return
     if (url === '') {
-      runWithIntegrity(editor, () =>
-        editor.chain().focus().unsetLink().run(),
-      )
+      runFormat((c) => c.unsetLink())
       return
     }
     const hrefResult = validateHref(url, { required: false })
@@ -240,14 +208,7 @@ export function InlineTextEditor({
       window.alert(hrefResult.message)
       return
     }
-    runWithIntegrity(editor, () =>
-      editor
-        .chain()
-        .focus()
-        .extendMarkRange('link')
-        .setLink({ href: url })
-        .run(),
-    )
+    runFormat((c) => c.extendMarkRange('link').setLink({ href: url }))
   }
 
   const floating = toolbarPosition === 'floating'

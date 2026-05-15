@@ -6,18 +6,14 @@ import {
   Close,
   ContentCopy,
 } from '@mui/icons-material'
-import { Box, Stack } from '@mui/material'
+import { Box } from '@mui/material'
 import { useState, type MouseEvent, type ReactNode } from 'react'
 import { TooltipIconButton } from '../components/TooltipIconButton'
 import { useActions, useSelectedBlockId } from '../hooks/useDocument'
 import type { Block } from '../types/schema'
 import { stopAnd } from '../utils/events'
 import { BlockTypeMenu } from './BlockTypeMenu'
-
-const blockBtnSx = {
-  color: '#4a9eff',
-  '&:hover': { background: '#4a9eff', color: 'white' },
-} as const
+import { HoverToolbar, SelectableShell } from './SelectableShell'
 
 type InsertMode = 'before' | 'after'
 
@@ -92,31 +88,17 @@ export function BlockShell({
   }
 
   return (
-    <Box
-      data-block-id={blockId}
-      onClick={(e) => {
-        e.stopPropagation()
-        setSelection({ kind: 'block', id: blockId })
-      }}
-      sx={{
-        position: 'relative',
-        outline: selected ? '2px solid #4a9eff' : undefined,
-        outlineOffset: selected ? '2px' : undefined,
-        '&:hover': !selected
-          ? { outline: '1px dashed #4a9eff', outlineOffset: '2px' }
-          : undefined,
-        '&:hover > .block-controls': { display: 'flex' },
-        '&:hover > .block-insert': { display: 'flex' },
-      }}
+    <SelectableShell
+      kind="block"
+      id={blockId}
+      selected={selected}
+      outlineOffset="2px"
+      hoverOutline="1px dashed #4a9eff"
+      hoverReveals={['block-controls', 'block-insert']}
     >
-      <Stack
-        direction="row"
+      <HoverToolbar
         className="block-controls"
-        alignItems="center"
-        onClick={(e) => e.stopPropagation()}
         sx={{
-          display: 'none',
-          position: 'absolute',
           top: 0,
           right: 0,
           transform: 'translateY(-50%)',
@@ -131,25 +113,21 @@ export function BlockShell({
         <TooltipIconButton
           title="Block 속성 편집"
           icon={Build}
-          sx={blockBtnSx}
           onClick={stopAnd(() => setSelection({ kind: 'block', id: blockId }))}
         />
         <TooltipIconButton
           title="위로 이동"
           icon={ArrowUpward}
-          sx={blockBtnSx}
           onClick={stopAnd(() => moveBlock(blockId, 'up'))}
         />
         <TooltipIconButton
           title="아래로 이동"
           icon={ArrowDownward}
-          sx={blockBtnSx}
           onClick={stopAnd(() => moveBlock(blockId, 'down'))}
         />
         <TooltipIconButton
           title="복제"
           icon={ContentCopy}
-          sx={blockBtnSx}
           onClick={stopAnd(() => duplicateBlock(blockId))}
         />
         {canDelete && (
@@ -157,14 +135,13 @@ export function BlockShell({
             title="블록 삭제"
             icon={Close}
             sx={{
-              ...blockBtnSx,
               color: '#d04',
               '&:hover': { background: '#d04', color: 'white' },
             }}
             onClick={stopAnd(() => removeBlock(blockId))}
           />
         )}
-      </Stack>
+      </HoverToolbar>
 
       {children}
 
@@ -185,6 +162,6 @@ export function BlockShell({
         onClose={() => setMenuAnchor(null)}
         onSelect={handleSelect}
       />
-    </Box>
+    </SelectableShell>
   )
 }

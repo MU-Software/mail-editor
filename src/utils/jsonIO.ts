@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import { EmailDocumentSchema, type EmailDocument } from '../types/schema'
 
 export function parseEmailDocument(json: string): EmailDocument {
@@ -31,5 +30,3 @@ export function parseEmailDocument(json: string): EmailDocument {
 export function stringifyEmailDocument(doc: EmailDocument): string {
   return JSON.stringify(doc, null, 2)
 }
-
-export { z }

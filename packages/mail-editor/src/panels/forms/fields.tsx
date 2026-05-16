@@ -154,7 +154,7 @@ type DeferredColorFieldProps = {
 export const DeferredColorField: FC<DeferredColorFieldProps> = ({ label, value, onCommit }) => {
   const binding = useImeSafeBinding(value, onCommit)
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
       <input
         type="color"
         value={binding.value}
@@ -226,7 +226,7 @@ export const StringListField: FC<StringListFieldProps> = ({ label, value, onComm
       {label && <Typography sx={{ fontSize: 12, color: 'text.secondary', mb: 0.5 }}>{label}</Typography>}
       <Stack spacing={0.5}>
         {items.map((item, i) => (
-          <Stack key={i} direction="row" spacing={0.5} alignItems="flex-end">
+          <Stack key={i} direction="row" spacing={0.5} sx={{ alignItems: 'flex-end' }}>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <ClickToEditField label={`${i + 1}`} value={item} onCommit={(v) => updateItem(i, v)} />
             </Box>
@@ -266,7 +266,7 @@ export const DescriptionItemsField: FC<DescriptionItemsFieldProps> = ({ label, v
       <Stack spacing={1}>
         {items.map((item, i) => (
           <Stack key={i} spacing={0.5} sx={{ p: 1, border: '1px solid #eee', borderRadius: 0.5 }}>
-            <Stack direction="row" spacing={0.5} alignItems="center">
+            <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
               <Typography sx={{ fontSize: 11, color: 'text.secondary', flex: 1 }}>#{i + 1}</Typography>
               <TooltipIconButton title="위로" icon={ArrowUpward} disabled={i === 0} onClick={() => moveItem(i, 'up')} />
               <TooltipIconButton title="아래로" icon={ArrowDownward} disabled={i === items.length - 1} onClick={() => moveItem(i, 'down')} />

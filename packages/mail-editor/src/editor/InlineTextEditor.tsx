@@ -339,7 +339,7 @@ const ColorPickerButton: FC<ColorPickerButtonProps> = ({ title, icon, activeColo
           },
         }}
       >
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
           <input
             type="color"
             value={activeColor ?? defaultColor}

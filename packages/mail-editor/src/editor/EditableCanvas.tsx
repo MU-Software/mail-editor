@@ -12,7 +12,7 @@ const AddRowButton: FC<{ atIndex: number }> = ({ atIndex }) => {
   const { addRow } = useActions()
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   return (
-    <Stack direction="row" justifyContent="center" onClick={(e) => e.stopPropagation()} sx={{ py: 0.75, background: 'rgba(74, 158, 255, 0.05)' }}>
+    <Stack direction="row" onClick={(e) => e.stopPropagation()} sx={{ justifyContent: 'center', py: 0.75, background: 'rgba(74, 158, 255, 0.05)' }}>
       <Button size="small" variant="outlined" startIcon={<Add />} onClick={(e: MouseEvent<HTMLButtonElement>) => setAnchor(e.currentTarget)}>
         Row 추가
       </Button>
@@ -37,9 +37,9 @@ export const EditableCanvas = () => {
   return (
     <Stack
       direction="row"
-      justifyContent="center"
       onClick={selectDocument}
       sx={{
+        justifyContent: 'center',
         flex: 1,
         overflow: 'auto',
         py: 3,

@@ -72,9 +72,8 @@ export const HoverToolbar: FC<HoverToolbarProps> = ({ className, sx, spacing, ch
     direction="row"
     spacing={spacing}
     className={className}
-    alignItems="center"
     onClick={(e: MouseEvent) => e.stopPropagation()}
-    sx={{ display: 'none', position: 'absolute', ...sx }}
+    sx={{ alignItems: 'center', display: 'none', position: 'absolute', ...sx }}
   >
     {children}
   </Stack>

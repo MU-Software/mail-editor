@@ -1,5 +1,5 @@
 import { useDocument } from '@mu-software/mail-editor/hooks/useDocument'
-import { previewHTML, type PreviewTheme } from '@mu-software/mail-editor/render/exportHTML'
+import { injectPreviewStyle, renderPreviewHTML, type PreviewTheme } from '@mu-software/mail-editor/render/exportHTML'
 import { Computer, InfoOutlined, PhoneIphone, TabletMac } from '@mui/icons-material'
 import {
   Box,
@@ -41,16 +41,10 @@ const THEME_OPTIONS: { value: PreviewTheme; label: string; description: string }
   },
 ]
 
-const WRAPPER_BG: Record<PreviewTheme, string> = {
-  light: '#e8e8e8',
-  'dark-invert': '#1c1c1e',
-  'dark-bg': '#1c1c1e',
-}
-
-const IFRAME_BG: Record<PreviewTheme, string> = {
-  light: '#ffffff',
-  'dark-invert': '#1c1c1e',
-  'dark-bg': '#1c1c1e',
+const THEME_PALETTE: Record<PreviewTheme, { wrapper: string; iframe: string }> = {
+  light: { wrapper: '#e8e8e8', iframe: '#ffffff' },
+  'dark-invert': { wrapper: '#1c1c1e', iframe: '#1c1c1e' },
+  'dark-bg': { wrapper: '#1c1c1e', iframe: '#1c1c1e' },
 }
 
 const presetForWidth = (w: number): DeviceKey | null => {
@@ -70,16 +64,17 @@ type PreviewCanvasProps = {
 export const PreviewCanvas: FC<PreviewCanvasProps> = ({ width, theme, onWidthChange, onThemeChange }) => {
   const doc = useDocument((d) => d)
   const [widthInput, setWidthInput] = useState<string>(() => String(width))
-  const [html, setHtml] = useState<string | null>(null)
+  const [rawHtml, setRawHtml] = useState<string | null>(null)
   const matchedPreset = presetForWidth(width)
   const themeDescription = THEME_OPTIONS.find((o) => o.value === theme)?.description ?? ''
+  const html = rawHtml === null ? null : injectPreviewStyle(rawHtml, theme)
 
   useEffect(() => {
     let cancelled = false
     const timer = setTimeout(() => {
-      previewHTML(doc, { theme })
+      renderPreviewHTML(doc)
         .then((result) => {
-          if (!cancelled) setHtml(result)
+          if (!cancelled) setRawHtml(result)
         })
         .catch((err: unknown) => {
           if (cancelled) return
@@ -91,7 +86,7 @@ export const PreviewCanvas: FC<PreviewCanvasProps> = ({ width, theme, onWidthCha
       cancelled = true
       clearTimeout(timer)
     }
-  }, [doc, theme])
+  }, [doc])
 
   const applyWidth = (w: number) => {
     const clamped = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, Math.round(w)))
@@ -183,7 +178,7 @@ export const PreviewCanvas: FC<PreviewCanvasProps> = ({ width, theme, onWidthCha
           justifyContent: 'center',
           py: 3,
           px: 2,
-          background: WRAPPER_BG[theme],
+          background: THEME_PALETTE[theme].wrapper,
           transition: 'background 0.15s',
         }}
       >
@@ -199,7 +194,7 @@ export const PreviewCanvas: FC<PreviewCanvasProps> = ({ width, theme, onWidthCha
               flexShrink: 0,
               alignSelf: 'stretch',
               border: 'none',
-              background: IFRAME_BG[theme],
+              background: THEME_PALETTE[theme].iframe,
               boxShadow: '0 2px 12px rgba(0, 0, 0, 0.12)',
             }}
           />

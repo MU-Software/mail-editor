@@ -18,8 +18,9 @@ const THEME_RULES: Record<PreviewTheme, string> = {
   'dark-bg': 'html{background:#1c1c1e}body{background:#1c1c1e!important}',
 }
 
-export const previewHTML = async (doc: EmailDocument, options?: { theme?: PreviewTheme }): Promise<string> => {
-  const html = await render(<EmailDocumentRenderer doc={doc} />, { pretty: false })
-  const style = `<style>${OVERSCROLL_RULE}${THEME_RULES[options?.theme ?? 'light']}</style>`
+export const renderPreviewHTML = async (doc: EmailDocument): Promise<string> => render(<EmailDocumentRenderer doc={doc} />, { pretty: false })
+
+export const injectPreviewStyle = (html: string, theme: PreviewTheme): string => {
+  const style = `<style>${OVERSCROLL_RULE}${THEME_RULES[theme]}</style>`
   return html.includes('</head>') ? html.replace('</head>', `${style}</head>`) : `${style}${html}`
 }

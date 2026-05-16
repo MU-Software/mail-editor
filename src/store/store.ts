@@ -15,13 +15,13 @@ const HISTORY_LIMIT = 100
 type EditDirection = 'add' | 'delete'
 type CoalesceInfo = { key: string; direction: EditDirection | null }
 
-function stringEditDirection(oldStr: string, newStr: string): EditDirection | null {
+const stringEditDirection = (oldStr: string, newStr: string): EditDirection | null => {
   if (newStr.length > oldStr.length) return 'add'
   if (newStr.length < oldStr.length) return 'delete'
   return null
 }
 
-function findSingleStringLeafDiff(oldVal: unknown, newVal: unknown): { subPath: string; oldStr: string; newStr: string } | null {
+const findSingleStringLeafDiff = (oldVal: unknown, newVal: unknown): { subPath: string; oldStr: string; newStr: string } | null => {
   if (Object.is(oldVal, newVal)) return null
 
   if (typeof oldVal === 'string' && typeof newVal === 'string') {
@@ -87,7 +87,7 @@ type DocumentState = {
   redo: () => void
 } & DocumentActions
 
-function resolveTarget(doc: EmailDocument, target: Selection): Record<string, unknown> | undefined {
+const resolveTarget = (doc: EmailDocument, target: Selection): Record<string, unknown> | undefined => {
   switch (target.kind) {
     case 'document':
       return doc
@@ -102,7 +102,7 @@ function resolveTarget(doc: EmailDocument, target: Selection): Record<string, un
   }
 }
 
-function sameSelection(a: Selection | null, b: Selection | null): boolean {
+const sameSelection = (a: Selection | null, b: Selection | null): boolean => {
   if (a === b) return true
   if (!a || !b) return false
   if (a.kind !== b.kind) return false

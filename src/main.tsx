@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import './App.css'
 
-async function defaultOnExport(html: string) {
+const defaultOnExport = async (html: string) => {
   try {
     await navigator.clipboard.writeText(html)
     alert('HTML이 클립보드에 복사되었습니다.')

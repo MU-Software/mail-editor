@@ -18,7 +18,7 @@ import type {
 
 type Sample = Record<string, string>
 
-function renderTextBlock(block: TextBlock, sample: Sample) {
+const renderTextBlock = (block: TextBlock, sample: Sample) => {
   return (
     <Text
       style={textStyle(block.styles)}
@@ -29,7 +29,7 @@ function renderTextBlock(block: TextBlock, sample: Sample) {
   )
 }
 
-function renderHeadingBlock(block: HeadingBlock, sample: Sample) {
+const renderHeadingBlock = (block: HeadingBlock, sample: Sample) => {
   return (
     <Heading
       as={`h${block.level}`}
@@ -41,13 +41,13 @@ function renderHeadingBlock(block: HeadingBlock, sample: Sample) {
   )
 }
 
-function renderImageBlock(block: ImageBlock) {
+const renderImageBlock = (block: ImageBlock) => {
   const img = <Img src={block.src} alt={block.alt} width={block.width} height={block.height} style={imageInlineStyle(block.styles)} />
   const wrapped = block.href ? <Link href={block.href}>{img}</Link> : img
   return <span style={imageContainerStyle(block.styles)}>{wrapped}</span>
 }
 
-function renderButtonBlock(block: ButtonBlock, sample: Sample) {
+const renderButtonBlock = (block: ButtonBlock, sample: Sample) => {
   return (
     <span style={buttonContainerStyle(block.styles)}>
       <Button href={block.href} style={buttonStyle(block.styles)}>
@@ -61,15 +61,15 @@ function renderButtonBlock(block: ButtonBlock, sample: Sample) {
   )
 }
 
-function renderHrBlock(block: HrBlock) {
+const renderHrBlock = (block: HrBlock) => {
   return <Hr style={hrStyle(block.styles)} />
 }
 
-function renderSpacerBlock(block: SpacerBlock) {
+const renderSpacerBlock = (block: SpacerBlock) => {
   return <div style={{ height: block.height, lineHeight: 0 }} />
 }
 
-function renderOrderedListBlock(block: OrderedListBlock, sample: Sample) {
+const renderOrderedListBlock = (block: OrderedListBlock, sample: Sample) => {
   return (
     <ol style={listStyle(block.styles)}>
       {block.items.map((item, i) => (
@@ -79,7 +79,7 @@ function renderOrderedListBlock(block: OrderedListBlock, sample: Sample) {
   )
 }
 
-function renderUnorderedListBlock(block: UnorderedListBlock, sample: Sample) {
+const renderUnorderedListBlock = (block: UnorderedListBlock, sample: Sample) => {
   return (
     <ul style={listStyle(block.styles)}>
       {block.items.map((item, i) => (
@@ -89,7 +89,7 @@ function renderUnorderedListBlock(block: UnorderedListBlock, sample: Sample) {
   )
 }
 
-function renderDescriptionListBlock(block: DescriptionListBlock, sample: Sample) {
+const renderDescriptionListBlock = (block: DescriptionListBlock, sample: Sample) => {
   return (
     <dl style={textStyle(block.styles)}>
       {block.items.map((item, i) => (
@@ -112,7 +112,7 @@ function renderDescriptionListBlock(block: DescriptionListBlock, sample: Sample)
   )
 }
 
-export function renderBlock(block: Block, sample: Sample): ReactElement {
+export const renderBlock = (block: Block, sample: Sample): ReactElement => {
   switch (block.type) {
     case 'text':
       return renderTextBlock(block, sample)

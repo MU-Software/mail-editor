@@ -1,14 +1,14 @@
 import { VAR_PATTERN } from '../render/variables'
 import type { EmailDocument } from '../types/schema'
 
-function collect(text: string | undefined, into: Set<string>) {
+const collect = (text: string | undefined, into: Set<string>) => {
   if (!text) return
   for (const match of text.matchAll(VAR_PATTERN)) {
     into.add(match[1])
   }
 }
 
-export function extractVariableNames(doc: EmailDocument): string[] {
+export const extractVariableNames = (doc: EmailDocument): string[] => {
   const found = new Set<string>()
   collect(doc.meta.subject, found)
   collect(doc.meta.preview, found)

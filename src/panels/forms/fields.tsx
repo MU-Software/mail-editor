@@ -59,13 +59,13 @@ const ClickToEditField: FC<ClickToEditFieldProps> = ({ label, value, onCommit })
   )
 }
 
-function useImeSafeBinding(
+const useImeSafeBinding = (
   external: string,
   onCommit: (v: string) => void,
   options?: {
     blockingValidate?: (v: string) => { ok: boolean; message?: string }
   },
-) {
+) => {
   const [local, setLocal] = useState(external)
   const composingRef = useRef(false)
   const focusedRef = useRef(false)

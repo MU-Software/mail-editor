@@ -41,7 +41,7 @@ const SPACING_KEYS = new Set(['paddingY', 'paddingX'])
 
 const BACKGROUND_KEYS = new Set(['backgroundColor', 'contentBackgroundColor'])
 
-export function groupOfProperty(def: PropertyDef): PropertyGroup {
+export const groupOfProperty = (def: PropertyDef): PropertyGroup => {
   if (def.group) return def.group
   const key = def.path[def.path.length - 1]
   if (BACKGROUND_KEYS.has(key)) return 'background'
@@ -51,7 +51,7 @@ export function groupOfProperty(def: PropertyDef): PropertyGroup {
   return 'content'
 }
 
-export function groupProperties(properties: readonly PropertyDef[]): Record<PropertyGroup, PropertyDef[]> {
+export const groupProperties = (properties: readonly PropertyDef[]): Record<PropertyGroup, PropertyDef[]> => {
   const result: Record<PropertyGroup, PropertyDef[]> = {
     content: [],
     typography: [],
@@ -276,7 +276,7 @@ export const BLOCK_TYPES: readonly BlockTypeDef[] = [
   },
 ]
 
-export function findBlockTypeDef(type: Block['type']): BlockTypeDef | undefined {
+export const findBlockTypeDef = (type: Block['type']): BlockTypeDef | undefined => {
   return BLOCK_TYPES.find((t) => t.type === type)
 }
 

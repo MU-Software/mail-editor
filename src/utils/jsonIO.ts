@@ -1,6 +1,6 @@
 import { EmailDocumentSchema, type EmailDocument } from '../types/schema'
 
-export function parseEmailDocument(json: string): EmailDocument {
+export const parseEmailDocument = (json: string): EmailDocument => {
   let parsed: unknown
   try {
     parsed = JSON.parse(json)
@@ -22,6 +22,6 @@ export function parseEmailDocument(json: string): EmailDocument {
   return result.data
 }
 
-export function stringifyEmailDocument(doc: EmailDocument): string {
+export const stringifyEmailDocument = (doc: EmailDocument): string => {
   return JSON.stringify(doc, null, 2)
 }

@@ -15,12 +15,12 @@ type BorderStyles = {
   borderColor?: string
 }
 
-export function paddingValue(y: number | undefined, x: number | undefined): string | undefined {
+export const paddingValue = (y: number | undefined, x: number | undefined): string | undefined => {
   if (y === undefined && x === undefined) return undefined
   return `${y ?? 0}px ${x ?? 0}px`
 }
 
-export function borderStyleProps(s: BorderStyles | undefined): CSSProperties {
+export const borderStyleProps = (s: BorderStyles | undefined): CSSProperties => {
   if (!s) return {}
   return {
     borderWidth: s.borderWidth,
@@ -29,7 +29,7 @@ export function borderStyleProps(s: BorderStyles | undefined): CSSProperties {
   }
 }
 
-export function textStyle(s: TextLikeStyles | undefined): CSSProperties {
+export const textStyle = (s: TextLikeStyles | undefined): CSSProperties => {
   if (!s) return { margin: 0 }
   return {
     color: s.color,
@@ -40,11 +40,11 @@ export function textStyle(s: TextLikeStyles | undefined): CSSProperties {
   }
 }
 
-export function headingStyle(s: HeadingBlock['styles']): CSSProperties {
+export const headingStyle = (s: HeadingBlock['styles']): CSSProperties => {
   return { color: s?.color, textAlign: s?.textAlign, margin: 0 }
 }
 
-export function buttonStyle(s: ButtonBlock['styles']): CSSProperties {
+export const buttonStyle = (s: ButtonBlock['styles']): CSSProperties => {
   if (!s) return {}
   return {
     backgroundColor: s.backgroundColor,
@@ -56,15 +56,15 @@ export function buttonStyle(s: ButtonBlock['styles']): CSSProperties {
   }
 }
 
-export function buttonContainerStyle(s: ButtonBlock['styles']): CSSProperties {
+export const buttonContainerStyle = (s: ButtonBlock['styles']): CSSProperties => {
   return { display: 'block', textAlign: s?.textAlign }
 }
 
-export function imageContainerStyle(s: ImageBlock['styles']): CSSProperties {
+export const imageContainerStyle = (s: ImageBlock['styles']): CSSProperties => {
   return { display: 'block', textAlign: s?.textAlign }
 }
 
-export function imageInlineStyle(s: ImageBlock['styles']): CSSProperties {
+export const imageInlineStyle = (s: ImageBlock['styles']): CSSProperties => {
   return {
     display: 'inline-block',
     verticalAlign: 'middle',
@@ -73,16 +73,16 @@ export function imageInlineStyle(s: ImageBlock['styles']): CSSProperties {
   }
 }
 
-export function listStyle(s: TextLikeStyles | undefined): CSSProperties {
+export const listStyle = (s: TextLikeStyles | undefined): CSSProperties => {
   return { ...textStyle(s), paddingLeft: 24 }
 }
 
-export function hrStyle(s: HrBlock['styles']): CSSProperties {
+export const hrStyle = (s: HrBlock['styles']): CSSProperties => {
   if (!s) return {}
   return { borderColor: s.color, borderTopWidth: s.thickness }
 }
 
-export function rowSectionStyle(s: Row['styles']): CSSProperties {
+export const rowSectionStyle = (s: Row['styles']): CSSProperties => {
   if (!s) return {}
   return {
     backgroundColor: s.backgroundColor,
@@ -93,7 +93,7 @@ export function rowSectionStyle(s: Row['styles']): CSSProperties {
   }
 }
 
-export function columnTdStyle(col: Column, totalWidth: number): CSSProperties {
+export const columnTdStyle = (col: Column, totalWidth: number): CSSProperties => {
   const safeWidth = col.width || 1
   const widthPct = `${((safeWidth / totalWidth) * 100).toFixed(4)}%`
   return {
@@ -105,6 +105,6 @@ export function columnTdStyle(col: Column, totalWidth: number): CSSProperties {
   }
 }
 
-export function columnPadding(col: Column): string | undefined {
+export const columnPadding = (col: Column): string | undefined => {
   return paddingValue(col.styles?.paddingY, col.styles?.paddingX)
 }

@@ -1,4 +1,4 @@
-export function newId(prefix: string = 'n'): string {
+export const newId = (prefix: string = 'n'): string => {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return `${prefix}_${crypto.randomUUID().slice(0, 8)}`
   }

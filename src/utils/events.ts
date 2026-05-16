@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
 
-export function stopAnd(fn: () => void) {
+export const stopAnd = (fn: () => void) => {
   return (e: MouseEvent) => {
     e.stopPropagation()
     fn()

@@ -24,11 +24,11 @@ import { validateHref, validateVariableMarkIntegrity } from '../utils/validation
 const DEFAULT_COLOR = '#000000'
 const DEFAULT_HIGHLIGHT = '#fff7a8'
 
-function normalize(html: string): string {
+const normalize = (html: string): string => {
   return html.replace(/<\/p>\s*<p>/g, '<br>').replace(/^<p>(.*?)<\/p>\s*$/s, '$1')
 }
 
-function runWithIntegrity(editor: Editor, apply: () => void) {
+const runWithIntegrity = (editor: Editor, apply: () => void) => {
   const before = normalize(editor.getHTML())
   apply()
   const after = normalize(editor.getHTML())

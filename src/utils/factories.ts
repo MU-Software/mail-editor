@@ -1,7 +1,7 @@
 import { newId } from './ids'
 import type { Block, Column, Row } from '../types/schema'
 
-export function createBlock(type: Block['type']): Block {
+export const createBlock = (type: Block['type']): Block => {
   const id = newId('b')
   switch (type) {
     case 'text':
@@ -49,7 +49,7 @@ export function createBlock(type: Block['type']): Block {
   }
 }
 
-export function createEmptyColumn(blockType: Block['type'] = 'text'): Column {
+export const createEmptyColumn = (blockType: Block['type'] = 'text'): Column => {
   return {
     id: newId('c'),
     width: 1,
@@ -57,7 +57,7 @@ export function createEmptyColumn(blockType: Block['type'] = 'text'): Column {
   }
 }
 
-export function createEmptyRow(blockType: Block['type'] = 'text'): Row {
+export const createEmptyRow = (blockType: Block['type'] = 'text'): Row => {
   return {
     id: newId('r'),
     columns: [createEmptyColumn(blockType)],
@@ -65,11 +65,11 @@ export function createEmptyRow(blockType: Block['type'] = 'text'): Row {
   }
 }
 
-export function cloneBlockWithNewId(block: Block): Block {
+export const cloneBlockWithNewId = (block: Block): Block => {
   return { ...block, id: newId('b') }
 }
 
-function cloneColumnWithNewIds(col: Column): Column {
+const cloneColumnWithNewIds = (col: Column): Column => {
   return {
     ...col,
     id: newId('c'),
@@ -77,7 +77,7 @@ function cloneColumnWithNewIds(col: Column): Column {
   }
 }
 
-export function cloneRowWithNewIds(row: Row): Row {
+export const cloneRowWithNewIds = (row: Row): Row => {
   return {
     ...row,
     id: newId('r'),

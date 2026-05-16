@@ -7,7 +7,7 @@ import { renderBlock } from '../render/blocks'
 import { buttonContainerStyle, buttonStyle, headingStyle, textStyle } from '../render/styles'
 import type { Block, ButtonBlock, HeadingBlock, TextBlock } from '../types/schema'
 
-function withClickHandler(element: ReactElement, onClick: (e: MouseEvent) => void): ReactElement {
+const withClickHandler = (element: ReactElement, onClick: (e: MouseEvent) => void): ReactElement => {
   return cloneElement(element as ReactElement<{ onClick?: (e: MouseEvent) => void }>, { onClick })
 }
 
@@ -22,7 +22,7 @@ const HEADING_LEVEL_FONT_SIZE: Record<HeadingBlock['level'], string> = {
   6: '0.67em',
 }
 
-function headingEditStyle(block: HeadingBlock): CSSProperties {
+const headingEditStyle = (block: HeadingBlock): CSSProperties => {
   return {
     fontSize: HEADING_LEVEL_FONT_SIZE[block.level],
     fontWeight: 'bold',

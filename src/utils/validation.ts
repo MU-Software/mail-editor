@@ -8,7 +8,7 @@ const VALID: ValidationOk = { ok: true }
 
 const DANGEROUS_HREF_PATTERN = /^\s*(javascript|vbscript)\s*:/i
 
-export function validateHref(value: unknown, options: { required: boolean }): ValidationResult {
+export const validateHref = (value: unknown, options: { required: boolean }): ValidationResult => {
   const raw = typeof value === 'string' ? value : ''
   const trimmed = raw.trim()
   if (trimmed === '') {
@@ -23,7 +23,7 @@ export function validateHref(value: unknown, options: { required: boolean }): Va
   return VALID
 }
 
-export function warnIfAltMissing(value: unknown): string | undefined {
+export const warnIfAltMissing = (value: unknown): string | undefined => {
   const raw = typeof value === 'string' ? value : ''
   if (raw.trim() === '') {
     return '접근성을 위해 alt 텍스트를 작성해주세요. Gmail 등에서 이미지가 차단될 때 대체 텍스트로 표시됩니다.'
@@ -51,13 +51,13 @@ const ZERO_MARKS: Marks = {
   highlight: null,
 }
 
-function readInlineStyle(el: Element, prop: string): string | null {
+const readInlineStyle = (el: Element, prop: string): string | null => {
   const style = (el as HTMLElement).style
   const value = style?.getPropertyValue(prop)?.trim()
   return value ? value : null
 }
 
-function marksWithElement(el: Element, parent: Marks): Marks {
+const marksWithElement = (el: Element, parent: Marks): Marks => {
   const tag = el.tagName.toLowerCase()
   let next = parent
   if (tag === 'strong' || tag === 'b') next = { ...next, bold: true }
@@ -77,7 +77,7 @@ function marksWithElement(el: Element, parent: Marks): Marks {
   return next
 }
 
-function marksEqual(a: Marks, b: Marks): boolean {
+const marksEqual = (a: Marks, b: Marks): boolean => {
   return (
     a.bold === b.bold &&
     a.italic === b.italic &&
@@ -89,7 +89,7 @@ function marksEqual(a: Marks, b: Marks): boolean {
   )
 }
 
-function walkForMarks(node: Node, marks: Marks, text: string[], marksOut: Marks[]) {
+const walkForMarks = (node: Node, marks: Marks, text: string[], marksOut: Marks[]) => {
   if (node.nodeType === Node.TEXT_NODE) {
     const t = node.textContent ?? ''
     for (const ch of t) {
@@ -112,7 +112,7 @@ function walkForMarks(node: Node, marks: Marks, text: string[], marksOut: Marks[
   }
 }
 
-export function validateVariableMarkIntegrity(html: string): ValidationResult {
+export const validateVariableMarkIntegrity = (html: string): ValidationResult => {
   const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html')
   const container = doc.body.firstChild as Element | null
   if (!container) return VALID
@@ -136,7 +136,7 @@ export function validateVariableMarkIntegrity(html: string): ValidationResult {
   return VALID
 }
 
-export function formatBytes(bytes: number): string {
+export const formatBytes = (bytes: number): string => {
   if (bytes < 1024) return `${bytes} B`
   const kb = bytes / 1024
   if (kb < 1024) return `${kb.toFixed(1)} KB`

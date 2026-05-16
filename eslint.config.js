@@ -67,6 +67,7 @@ export default tseslint.config(
       eqeqeq: ['error', 'always', { null: 'ignore' }],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'react/prop-types': 'off',
+      'func-style': ['error', 'expression'],
     },
   },
 )

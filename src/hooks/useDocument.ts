@@ -5,40 +5,40 @@ import type { DocumentActions, Selection, UndoControls } from '../store/types'
 import type { Block, Column, EmailDocument, Row } from '../types/schema'
 import { findBlock, findColumn, findRow } from '../utils/locate'
 
-export function useDocument<T>(selector: (doc: EmailDocument) => T): T {
+export const useDocument = <T>(selector: (doc: EmailDocument) => T): T => {
   return useDocumentStore((state) => selector(state.doc))
 }
 
-export function useSelection(): Selection | null {
+export const useSelection = (): Selection | null => {
   return useDocumentStore((state) => state.selection)
 }
 
-export function useShowRawVariables(): boolean {
+export const useShowRawVariables = (): boolean => {
   return useDocumentStore((state) => state.showRawVariables)
 }
 
-export function useSetShowRawVariables(): (value: boolean) => void {
+export const useSetShowRawVariables = (): ((value: boolean) => void) => {
   return useDocumentStore((state) => state.setShowRawVariables)
 }
 
-export function useSelectedBlockId(): string | null {
+export const useSelectedBlockId = (): string | null => {
   return useDocumentStore((state) => (state.selection?.kind === 'block' ? state.selection.id : null))
 }
 
-export function useSelectedRowId(): string | null {
+export const useSelectedRowId = (): string | null => {
   return useDocumentStore((state) => (state.selection?.kind === 'row' ? state.selection.id : null))
 }
 
-export function useSelectedColumnId(): string | null {
+export const useSelectedColumnId = (): string | null => {
   return useDocumentStore((state) => (state.selection?.kind === 'column' ? state.selection.id : null))
 }
 
-export function useSelectedTarget():
+export const useSelectedTarget = ():
   | { kind: 'document'; obj: EmailDocument }
   | { kind: 'row'; obj: Row }
   | { kind: 'column'; obj: Column }
   | { kind: 'block'; obj: Block }
-  | null {
+  | null => {
   return useDocumentStore(
     useShallow((state) => {
       const sel = state.selection
@@ -63,7 +63,7 @@ export function useSelectedTarget():
   )
 }
 
-export function useActions(): DocumentActions {
+export const useActions = (): DocumentActions => {
   return useDocumentStore(
     useShallow((state) => ({
       replaceDocument: state.replaceDocument,
@@ -89,7 +89,7 @@ export function useActions(): DocumentActions {
   )
 }
 
-export function useUndo(): UndoControls {
+export const useUndo = (): UndoControls => {
   return useDocumentStore(
     useShallow((state) => ({
       undo: state.undo,

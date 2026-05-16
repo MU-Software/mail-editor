@@ -7,7 +7,7 @@ import type { EmailDocument, Row as RowT } from '../types/schema'
 
 type Sample = Record<string, string>
 
-function renderRow(row: RowT, sample: Sample) {
+const renderRow = (row: RowT, sample: Sample) => {
   const totalWidth = row.columns.reduce((acc, c) => acc + (c.width || 1), 0)
   return (
     <Section key={row.id} style={rowSectionStyle(row.styles)}>

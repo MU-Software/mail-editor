@@ -11,6 +11,7 @@ import { useActions, useUndo } from './hooks/useDocument'
 import { JsonPanel } from './panels/JsonPanel'
 import { PropertiesPanel } from './panels/PropertiesPanel'
 import { SamplePanel } from './panels/SamplePanel'
+import type { PreviewTheme } from './render/exportHTML'
 import { exportHTML } from './render/exportHTML'
 import { useDocumentStore } from './store/store'
 import type { EmailDocument } from './types/schema'
@@ -75,6 +76,8 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, ref }) => {
   const { resetDocument } = useActions()
   const [tab, setTab] = useState<TabKey>('sample')
   const [mode, setMode] = useState<Mode>('edit')
+  const [previewWidth, setPreviewWidth] = useState<number>(1024)
+  const [previewTheme, setPreviewTheme] = useState<PreviewTheme>('light')
   const [bottomCollapsed, setBottomCollapsed] = useState(false)
   const [propsCollapsed, setPropsCollapsed] = useState(false)
 
@@ -99,6 +102,7 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, ref }) => {
   }, [initialDocument, resetDocument])
 
   useEffect(() => {
+    if (mode !== 'edit') return
     const handler = (e: KeyboardEvent) => {
       if (!(e.metaKey || e.ctrlKey)) return
       if (e.key.toLowerCase() !== 'z') return
@@ -114,7 +118,7 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, ref }) => {
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [undo, redo, canUndo, canRedo])
+  }, [undo, redo, canUndo, canRedo, mode])
 
   const toggleBottomPanel = () => {
     const p = bottomRef.current
@@ -181,7 +185,13 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, ref }) => {
                 style={{ height: '100%' }}
               >
                 <Panel id="canvas" defaultSize={70} minSize={30}>
-                  <Stack sx={{ height: '100%' }}>{mode === 'edit' ? <EditableCanvas /> : <PreviewCanvas />}</Stack>
+                  <Stack sx={{ height: '100%' }}>
+                    {mode === 'edit' ? (
+                      <EditableCanvas />
+                    ) : (
+                      <PreviewCanvas width={previewWidth} theme={previewTheme} onWidthChange={setPreviewWidth} onThemeChange={setPreviewTheme} />
+                    )}
+                  </Stack>
                 </Panel>
                 <RowResizer />
                 <Panel

@@ -1,2 +1,3 @@
 pnpm lint-staged
+pnpm --filter playground validate:sample
 pnpm -r exec tsc --noEmit

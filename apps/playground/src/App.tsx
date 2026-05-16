@@ -1,6 +1,6 @@
-import { MailEditor, type EmailDocument } from '@mu-software/mail-editor'
+import { MailEditor, type EmailDocument, type MailEditorHandle } from '@mu-software/mail-editor'
 import { Box, Snackbar } from '@mui/material'
-import { useState, type FC } from 'react'
+import { useRef, useState, type FC } from 'react'
 
 import { AppBar } from './AppBar'
 import { JsonExportDialog } from './JsonExportDialog'
@@ -9,21 +9,40 @@ import { sampleDocument } from './data/sampleDocument'
 import { handleHtmlExport } from './htmlExport'
 
 export const App: FC = () => {
+  const editorRef = useRef<MailEditorHandle>(null)
   const [doc, setDoc] = useState<EmailDocument>(sampleDocument)
   const [importOpen, setImportOpen] = useState(false)
   const [exportDoc, setExportDoc] = useState<EmailDocument | null>(null)
   const [sizeNotice, setSizeNotice] = useState<string | null>(null)
+  const [htmlExporting, setHtmlExporting] = useState(false)
 
-  const onHtmlExport = async (html: string) => {
-    const result = await handleHtmlExport(html)
-    if (result.ok) setSizeNotice(`HTML 크기: ${result.sizeText}`)
+  const onJsonExport = () => {
+    const current = editorRef.current?.exportEmailDocument()
+    if (current) setExportDoc(current)
+  }
+
+  const onHtmlExport = async () => {
+    if (!editorRef.current) return
+    setHtmlExporting(true)
+    try {
+      const html = await editorRef.current.exportHTML()
+      const result = await handleHtmlExport(html)
+      if (result.ok) setSizeNotice(`HTML 크기: ${result.sizeText}`)
+    } finally {
+      setHtmlExporting(false)
+    }
   }
 
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <AppBar onJsonImport={() => setImportOpen(true)} />
+      <AppBar
+        onJsonImport={() => setImportOpen(true)}
+        onJsonExport={onJsonExport}
+        onHtmlExport={() => void onHtmlExport()}
+        htmlExporting={htmlExporting}
+      />
       <Box sx={{ flex: 1, minHeight: 0 }}>
-        <MailEditor initialDocument={doc} onJsonExport={setExportDoc} onHtmlExport={onHtmlExport} />
+        <MailEditor ref={editorRef} initialDocument={doc} />
       </Box>
       <JsonImportDialog open={importOpen} onClose={() => setImportOpen(false)} onImport={setDoc} />
       <JsonExportDialog doc={exportDoc} onClose={() => setExportDoc(null)} />

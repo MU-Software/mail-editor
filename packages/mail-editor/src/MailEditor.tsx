@@ -44,9 +44,9 @@ export type MailEditorProps = {
 const PaneHeader: FC<{ children: React.ReactNode }> = ({ children }) => (
   <Stack
     direction="row"
-    justifyContent="space-between"
-    alignItems="center"
     sx={{
+      justifyContent: 'space-between',
+      alignItems: 'center',
       px: 1,
       py: 0.5,
       minHeight: 36,

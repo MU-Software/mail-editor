@@ -61,7 +61,7 @@ export const SamplePanel = () => {
       ) : (
         <Stack spacing={1}>
           {rows.map((row) => (
-            <Stack key={row.name} direction="row" spacing={1} alignItems="center" sx={{ opacity: row.used ? 1 : 0.5 }}>
+            <Stack key={row.name} direction="row" spacing={1} sx={{ alignItems: 'center', opacity: row.used ? 1 : 0.5 }}>
               <Box
                 component="code"
                 sx={{

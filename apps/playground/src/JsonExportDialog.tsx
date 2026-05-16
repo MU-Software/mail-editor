@@ -1,4 +1,4 @@
-import { stringifyEmailDocument, type EmailDocument } from '@mu-software/mail-editor'
+import { type EmailDocument } from '@mu-software/mail-editor'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, TextField } from '@mui/material'
 import { useState, type FC } from 'react'
 
@@ -6,7 +6,7 @@ export const JsonExportDialog: FC<{
   doc: EmailDocument | null
   onClose: () => void
 }> = ({ doc, onClose }) => {
-  const json = doc ? stringifyEmailDocument(doc) : ''
+  const json = doc ? JSON.stringify(doc, null, 2) : ''
   const [feedback, setFeedback] = useState<string | null>(null)
 
   const handleCopy = async () => {

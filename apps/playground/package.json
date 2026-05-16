@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:sample": "tsx scripts/validate-sample.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

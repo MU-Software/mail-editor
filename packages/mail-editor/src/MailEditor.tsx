@@ -1,11 +1,12 @@
-import { KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight, KeyboardArrowUp, Redo, Undo } from '@mui/icons-material'
-import { Box, Button, ScopedCssBaseline, Stack, Tab, Tabs } from '@mui/material'
+import { Edit, KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight, KeyboardArrowUp, Redo, Undo, Visibility } from '@mui/icons-material'
+import { Box, Button, ScopedCssBaseline, Stack, Tab, Tabs, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useEffect, useImperativeHandle, useLayoutEffect, useRef, useState, type FC, type Ref } from 'react'
 import { Group, Panel, Separator, useDefaultLayout, type PanelImperativeHandle } from 'react-resizable-panels'
 
 import { TooltipIconButton } from './components/TooltipIconButton'
 import { EditableCanvas } from './editor/EditableCanvas'
+import { PreviewCanvas } from './editor/PreviewCanvas'
 import { useActions, useUndo } from './hooks/useDocument'
 import { JsonPanel } from './panels/JsonPanel'
 import { PropertiesPanel } from './panels/PropertiesPanel'
@@ -35,6 +36,7 @@ const ColumnResizer = styled(Resizer)({
 })
 
 type TabKey = 'sample' | 'json'
+type Mode = 'edit' | 'preview'
 
 export type MailEditorHandle = {
   exportEmailDocument: () => EmailDocument
@@ -72,6 +74,7 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, ref }) => {
   const { undo, redo, canUndo, canRedo } = useUndo()
   const { resetDocument } = useActions()
   const [tab, setTab] = useState<TabKey>('sample')
+  const [mode, setMode] = useState<Mode>('edit')
   const [bottomCollapsed, setBottomCollapsed] = useState(false)
   const [propsCollapsed, setPropsCollapsed] = useState(false)
 
@@ -143,12 +146,28 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, ref }) => {
         <Panel id="main" defaultSize={75} minSize={40}>
           <Stack sx={{ height: '100%', background: '#f4f4f4' }}>
             <PaneHeader>
-              <Box />
+              <ToggleButtonGroup
+                value={mode}
+                exclusive
+                size="small"
+                onChange={(_, v: Mode | null) => {
+                  if (v) setMode(v)
+                }}
+              >
+                <ToggleButton value="edit" sx={{ textTransform: 'none', gap: 0.5, fontSize: 12, py: 0.25, px: 1 }}>
+                  <Edit fontSize="small" />
+                  편집
+                </ToggleButton>
+                <ToggleButton value="preview" sx={{ textTransform: 'none', gap: 0.5, fontSize: 12, py: 0.25, px: 1 }}>
+                  <Visibility fontSize="small" />
+                  미리보기
+                </ToggleButton>
+              </ToggleButtonGroup>
               <Stack direction="row" spacing={1}>
-                <Button size="small" startIcon={<Undo />} onClick={undo} disabled={!canUndo} sx={{ textTransform: 'none' }}>
+                <Button size="small" startIcon={<Undo />} onClick={undo} disabled={!canUndo || mode !== 'edit'} sx={{ textTransform: 'none' }}>
                   Undo
                 </Button>
-                <Button size="small" startIcon={<Redo />} onClick={redo} disabled={!canRedo} sx={{ textTransform: 'none' }}>
+                <Button size="small" startIcon={<Redo />} onClick={redo} disabled={!canRedo || mode !== 'edit'} sx={{ textTransform: 'none' }}>
                   Redo
                 </Button>
               </Stack>
@@ -162,9 +181,7 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, ref }) => {
                 style={{ height: '100%' }}
               >
                 <Panel id="canvas" defaultSize={70} minSize={30}>
-                  <Stack sx={{ height: '100%' }}>
-                    <EditableCanvas />
-                  </Stack>
+                  <Stack sx={{ height: '100%' }}>{mode === 'edit' ? <EditableCanvas /> : <PreviewCanvas />}</Stack>
                 </Panel>
                 <RowResizer />
                 <Panel

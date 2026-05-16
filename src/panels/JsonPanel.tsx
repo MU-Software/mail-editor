@@ -1,7 +1,8 @@
 import { Box } from '@mui/material'
+
 import { useDocument } from '../hooks/useDocument'
 
-export function JsonPanel() {
+export const JsonPanel = () => {
   const doc = useDocument((d) => d)
   return (
     <Box

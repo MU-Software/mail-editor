@@ -1,24 +1,17 @@
 import { Box, Stack, Typography } from '@mui/material'
-import {
-  COLUMN_PROPERTIES,
-  DOCUMENT_PROPERTIES,
-  ROW_PROPERTIES,
-  findBlockTypeDef,
-  type PropertyDef,
-} from '../editor/schemas'
+
+import { COLUMN_PROPERTIES, DOCUMENT_PROPERTIES, ROW_PROPERTIES, findBlockTypeDef, type PropertyDef } from '../editor/schemas'
 import { useSelectedTarget } from '../hooks/useDocument'
 import type { Selection } from '../store/types'
 import { PropertiesForm } from './forms/PropertiesForm'
 
-export function PropertiesPanel() {
+export const PropertiesPanel = () => {
   const target = useSelectedTarget()
 
   if (!target) {
     return (
       <Box sx={{ p: 2 }}>
-        <Typography sx={{ color: '#888', fontSize: 13 }}>
-          블록, Row, Column, 또는 문서 영역을 클릭하면 속성이 여기에 표시됩니다.
-        </Typography>
+        <Typography sx={{ color: '#888', fontSize: 13 }}>블록, Row, Column, 또는 문서 영역을 클릭하면 속성이 여기에 표시됩니다.</Typography>
       </Box>
     )
   }
@@ -56,11 +49,7 @@ export function PropertiesPanel() {
   return (
     <Stack sx={{ p: 2 }} spacing={2}>
       <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{title}</Typography>
-      <PropertiesForm
-        target={selection}
-        obj={target.obj}
-        properties={properties}
-      />
+      <PropertiesForm target={selection} obj={target.obj} properties={properties} />
     </Stack>
   )
 }

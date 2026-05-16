@@ -8,16 +8,11 @@ const VALID: ValidationOk = { ok: true }
 
 const DANGEROUS_HREF_PATTERN = /^\s*(javascript|vbscript)\s*:/i
 
-export function validateHref(
-  value: unknown,
-  options: { required: boolean },
-): ValidationResult {
-  const raw = typeof value === 'string' ? value : value == null ? '' : String(value)
+export function validateHref(value: unknown, options: { required: boolean }): ValidationResult {
+  const raw = typeof value === 'string' ? value : ''
   const trimmed = raw.trim()
   if (trimmed === '') {
-    return options.required
-      ? { ok: false, message: 'href는 비워둘 수 없습니다.' }
-      : VALID
+    return options.required ? { ok: false, message: 'href는 비워둘 수 없습니다.' } : VALID
   }
   if (DANGEROUS_HREF_PATTERN.test(trimmed)) {
     return {
@@ -94,12 +89,7 @@ function marksEqual(a: Marks, b: Marks): boolean {
   )
 }
 
-function walkForMarks(
-  node: Node,
-  marks: Marks,
-  text: string[],
-  marksOut: Marks[],
-) {
+function walkForMarks(node: Node, marks: Marks, text: string[], marksOut: Marks[]) {
   if (node.nodeType === Node.TEXT_NODE) {
     const t = node.textContent ?? ''
     for (const ch of t) {

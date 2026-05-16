@@ -1,24 +1,13 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Snackbar,
-  Stack,
-  TextField
-} from '@mui/material'
-import { useMemo, useState } from 'react'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, TextField } from '@mui/material'
+import { useMemo, useState, type FC } from 'react'
+
 import { useDocument } from '../hooks/useDocument'
 import { stringifyEmailDocument } from '../utils/jsonIO'
 
-export function JsonExportDialog({
-  open,
-  onClose,
-}: {
+export const JsonExportDialog: FC<{
   open: boolean
   onClose: () => void
-}) {
+}> = ({ open, onClose }) => {
   const doc = useDocument((d) => d)
   const json = useMemo(() => stringifyEmailDocument(doc), [doc])
   const [copied, setCopied] = useState(false)
@@ -35,9 +24,7 @@ export function JsonExportDialog({
   return (
     <>
       <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-        <DialogTitle>
-          JSON 내보내기
-        </DialogTitle>
+        <DialogTitle>JSON 내보내기</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ pt: 1 }}>
             <TextField
@@ -50,8 +37,7 @@ export function JsonExportDialog({
                 input: {
                   readOnly: true,
                   sx: {
-                    fontFamily:
-                      'ui-monospace, SFMono-Regular, Menlo, monospace',
+                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
                     fontSize: 12,
                   },
                 },
@@ -61,7 +47,7 @@ export function JsonExportDialog({
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>닫기</Button>
-          <Button variant="contained" onClick={handleCopy}>
+          <Button variant="contained" onClick={() => void handleCopy()}>
             클립보드에 복사
           </Button>
         </DialogActions>

@@ -1,5 +1,5 @@
-import type { Block, Column, Row } from '../types/schema'
 import { newId } from './ids'
+import type { Block, Column, Row } from '../types/schema'
 
 export function createBlock(type: Block['type']): Block {
   const id = newId('b')

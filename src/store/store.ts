@@ -1,43 +1,27 @@
 import { current } from 'immer'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
+
+import type { DocumentActions, Selection } from './types'
 import { sampleDocument } from '../data/sampleDocument'
 import type { EmailDocument } from '../types/schema'
-import {
-  cloneBlockWithNewId,
-  cloneRowWithNewIds,
-  createBlock,
-  createEmptyColumn,
-  createEmptyRow,
-} from '../utils/factories'
-import {
-  findBlockContext,
-  findColumn,
-  findColumnWithRow,
-  findRow,
-} from '../utils/locate'
 import { swapInPlace } from '../utils/array'
+import { cloneBlockWithNewId, cloneRowWithNewIds, createBlock, createEmptyColumn, createEmptyRow } from '../utils/factories'
+import { findBlockContext, findColumn, findColumnWithRow, findRow } from '../utils/locate'
 import { getAtPath, setAtPath } from '../utils/path'
-import type { DocumentActions, Selection } from './types'
 
 const HISTORY_LIMIT = 100
 
 type EditDirection = 'add' | 'delete'
 type CoalesceInfo = { key: string; direction: EditDirection | null }
 
-function stringEditDirection(
-  oldStr: string,
-  newStr: string,
-): EditDirection | null {
+function stringEditDirection(oldStr: string, newStr: string): EditDirection | null {
   if (newStr.length > oldStr.length) return 'add'
   if (newStr.length < oldStr.length) return 'delete'
   return null
 }
 
-function findSingleStringLeafDiff(
-  oldVal: unknown,
-  newVal: unknown,
-): { subPath: string; oldStr: string; newStr: string } | null {
+function findSingleStringLeafDiff(oldVal: unknown, newVal: unknown): { subPath: string; oldStr: string; newStr: string } | null {
   if (Object.is(oldVal, newVal)) return null
 
   if (typeof oldVal === 'string' && typeof newVal === 'string') {
@@ -103,26 +87,17 @@ type DocumentState = {
   redo: () => void
 } & DocumentActions
 
-function resolveTarget(
-  doc: EmailDocument,
-  target: Selection,
-): Record<string, unknown> | undefined {
+function resolveTarget(doc: EmailDocument, target: Selection): Record<string, unknown> | undefined {
   switch (target.kind) {
     case 'document':
-      return doc as unknown as Record<string, unknown>
+      return doc
     case 'row':
-      return findRow(doc, target.id) as unknown as
-        | Record<string, unknown>
-        | undefined
+      return findRow(doc, target.id)
     case 'column':
-      return findColumn(doc, target.id) as unknown as
-        | Record<string, unknown>
-        | undefined
+      return findColumn(doc, target.id)
     case 'block': {
       const ctx = findBlockContext(doc, target.id)
-      return ctx
-        ? (ctx.col.blocks[ctx.index] as unknown as Record<string, unknown>)
-        : undefined
+      return ctx ? ctx.col.blocks[ctx.index] : undefined
     }
   }
 }
@@ -139,21 +114,16 @@ export const useDocumentStore = create<DocumentState>()(
   immer((set, get) => {
     let lastEdit: CoalesceInfo | null = null
 
-    const withHistory = (
-      recipe: (draft: DocumentState) => void,
-      coalesce?: CoalesceInfo,
-    ) =>
+    const withHistory = (recipe: (draft: DocumentState) => void, coalesce?: CoalesceInfo) =>
       set((draft) => {
         const canMerge =
           coalesce !== undefined &&
           lastEdit !== null &&
           lastEdit.key === coalesce.key &&
-          (coalesce.direction === null ||
-            lastEdit.direction === null ||
-            lastEdit.direction === coalesce.direction)
+          (coalesce.direction === null || lastEdit.direction === null || lastEdit.direction === coalesce.direction)
 
         if (!canMerge) {
-          const prev = current(draft.doc) as EmailDocument
+          const prev = current(draft.doc)
           draft.past.push(prev)
           if (draft.past.length > HISTORY_LIMIT) draft.past.shift()
           draft.future.length = 0
@@ -189,7 +159,7 @@ export const useDocumentStore = create<DocumentState>()(
         set((draft) => {
           if (draft.past.length === 0) return
           const prev = draft.past.pop() as EmailDocument
-          draft.future.unshift(current(draft.doc) as EmailDocument)
+          draft.future.unshift(current(draft.doc))
           draft.doc = prev
           resetCoalesce()
         }),
@@ -198,7 +168,7 @@ export const useDocumentStore = create<DocumentState>()(
         set((draft) => {
           if (draft.future.length === 0) return
           const next = draft.future.shift() as EmailDocument
-          draft.past.push(current(draft.doc) as EmailDocument)
+          draft.past.push(current(draft.doc))
           draft.doc = next
           resetCoalesce()
         }),
@@ -217,10 +187,7 @@ export const useDocumentStore = create<DocumentState>()(
       removeRow: (rowId) =>
         withHistory((draft) => {
           draft.doc.rows = draft.doc.rows.filter((r) => r.id !== rowId)
-          if (
-            draft.selection?.kind === 'row' &&
-            draft.selection.id === rowId
-          ) {
+          if (draft.selection?.kind === 'row' && draft.selection.id === rowId) {
             draft.selection = null
           }
         }),
@@ -267,10 +234,7 @@ export const useDocumentStore = create<DocumentState>()(
           if (!ctx) return
           if (ctx.row.columns.length <= 1) return
           ctx.row.columns = ctx.row.columns.filter((c) => c.id !== columnId)
-          if (
-            draft.selection?.kind === 'column' &&
-            draft.selection.id === columnId
-          ) {
+          if (draft.selection?.kind === 'column' && draft.selection.id === columnId) {
             draft.selection = null
           }
         }),
@@ -301,10 +265,7 @@ export const useDocumentStore = create<DocumentState>()(
           const ctx = findBlockContext(draft.doc, blockId)
           if (!ctx) return
           ctx.col.blocks.splice(ctx.index, 1)
-          if (
-            draft.selection?.kind === 'block' &&
-            draft.selection.id === blockId
-          ) {
+          if (draft.selection?.kind === 'block' && draft.selection.id === blockId) {
             draft.selection = null
           }
         }),
@@ -326,18 +287,11 @@ export const useDocumentStore = create<DocumentState>()(
 
       updateFieldAt: (target, path, value) => {
         const obj = resolveTarget(get().doc, target)
-        const diff = obj
-          ? findSingleStringLeafDiff(getAtPath(obj, path), value)
-          : null
-        const targetKey =
-          target.kind === 'document'
-            ? 'document'
-            : `${target.kind}:${target.id}`
+        const diff = obj ? findSingleStringLeafDiff(getAtPath(obj, path), value) : null
+        const targetKey = target.kind === 'document' ? 'document' : `${target.kind}:${target.id}`
         const coalesce: CoalesceInfo | undefined = diff
           ? {
-              key: `field:${targetKey}:${path.join('.')}${
-                diff.subPath ? `.${diff.subPath}` : ''
-              }`,
+              key: `field:${targetKey}:${path.join('.')}${diff.subPath ? `.${diff.subPath}` : ''}`,
               direction: stringEditDirection(diff.oldStr, diff.newStr),
             }
           : undefined

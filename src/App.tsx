@@ -11,36 +11,20 @@ import {
   Redo,
   Undo,
 } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Snackbar,
-  Stack,
-  Tab,
-  Tabs,
-} from '@mui/material'
+import { Box, Button, ListItemIcon, ListItemText, Menu, MenuItem, Snackbar, Stack, Tab, Tabs } from '@mui/material'
+import { useEffect, useRef, useState, type FC, type MouseEvent } from 'react'
+import { Group, Panel, Separator, useDefaultLayout, type PanelImperativeHandle } from 'react-resizable-panels'
+
 import { TooltipIconButton } from './components/TooltipIconButton'
-import { useEffect, useRef, useState, type MouseEvent } from 'react'
-import {
-  Group,
-  Panel,
-  Separator,
-  useDefaultLayout,
-  type PanelImperativeHandle,
-} from 'react-resizable-panels'
 import { EditableCanvas } from './editor/EditableCanvas'
 import { useUndo } from './hooks/useDocument'
-import { useDocumentStore } from './store/store'
 import { JsonExportDialog } from './panels/JsonExportDialog'
 import { JsonImportDialog } from './panels/JsonImportDialog'
 import { JsonPanel } from './panels/JsonPanel'
 import { PropertiesPanel } from './panels/PropertiesPanel'
 import { SamplePanel } from './panels/SamplePanel'
 import { exportHTML } from './render/exportHTML'
+import { useDocumentStore } from './store/store'
 import { formatBytes, GMAIL_CLIP_BYTES } from './utils/validation'
 
 type TabKey = 'sample' | 'json'
@@ -49,7 +33,7 @@ export type AppProps = {
   onExport?: (html: string) => void | Promise<void>
 }
 
-function PaneHeader({ children }: { children: React.ReactNode }) {
+const PaneHeader: FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Stack
       direction="row"
@@ -72,7 +56,7 @@ function PaneHeader({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function App({ onExport }: AppProps) {
+export const App: FC<AppProps> = ({ onExport }) => {
   const { undo, redo, canUndo, canRedo } = useUndo()
   const [tab, setTab] = useState<TabKey>('sample')
   const [exporting, setExporting] = useState(false)
@@ -107,8 +91,7 @@ export function App({ onExport }: AppProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [undo, redo, canUndo, canRedo])
 
-  const openMenu = (e: MouseEvent<HTMLButtonElement>) =>
-    setMenuAnchor(e.currentTarget)
+  const openMenu = (e: MouseEvent<HTMLButtonElement>) => setMenuAnchor(e.currentTarget)
   const closeMenu = () => setMenuAnchor(null)
 
   const handleHtmlExport = async () => {
@@ -134,19 +117,26 @@ export function App({ onExport }: AppProps) {
     }
   }
 
-  const togglePanel = (ref: React.RefObject<PanelImperativeHandle | null>) => () => {
-    const p = ref.current
+  const toggleBottomPanel = () => {
+    const p = bottomRef.current
     if (!p) return
     if (p.isCollapsed()) p.expand()
     else p.collapse()
   }
 
-  const trackCollapsed = (
-    ref: React.RefObject<PanelImperativeHandle | null>,
-    setter: (next: boolean) => void,
-  ) => () => {
-    const c = ref.current?.isCollapsed() ?? false
-    setter(c)
+  const togglePropsPanel = () => {
+    const p = propsRef.current
+    if (!p) return
+    if (p.isCollapsed()) p.expand()
+    else p.collapse()
+  }
+
+  const trackBottomCollapsed = () => {
+    setBottomCollapsed(bottomRef.current?.isCollapsed() ?? false)
+  }
+
+  const trackPropsCollapsed = () => {
+    setPropsCollapsed(propsRef.current?.isCollapsed() ?? false)
   }
 
   return (
@@ -163,22 +153,10 @@ export function App({ onExport }: AppProps) {
             <PaneHeader>
               <span>editor</span>
               <Stack direction="row" spacing={1}>
-                <Button
-                  size="small"
-                  startIcon={<Undo />}
-                  onClick={undo}
-                  disabled={!canUndo}
-                  sx={{ textTransform: 'none' }}
-                >
+                <Button size="small" startIcon={<Undo />} onClick={undo} disabled={!canUndo} sx={{ textTransform: 'none' }}>
                   Undo
                 </Button>
-                <Button
-                  size="small"
-                  startIcon={<Redo />}
-                  onClick={redo}
-                  disabled={!canRedo}
-                  sx={{ textTransform: 'none' }}
-                >
+                <Button size="small" startIcon={<Redo />} onClick={redo} disabled={!canRedo} sx={{ textTransform: 'none' }}>
                   Redo
                 </Button>
                 <Button
@@ -220,14 +198,8 @@ export function App({ onExport }: AppProps) {
                     </ListItemIcon>
                     <ListItemText>JSON 내보내기</ListItemText>
                   </MenuItem>
-                  <MenuItem onClick={handleHtmlExport} disabled={!onExport}>
-                    <ListItemIcon>
-                      {onExport ? (
-                        <FileDownload fontSize="small" />
-                      ) : (
-                        <Description fontSize="small" />
-                      )}
-                    </ListItemIcon>
+                  <MenuItem onClick={() => void handleHtmlExport()} disabled={!onExport}>
+                    <ListItemIcon>{onExport ? <FileDownload fontSize="small" /> : <Description fontSize="small" />}</ListItemIcon>
                     <ListItemText>HTML 내보내기</ListItemText>
                   </MenuItem>
                 </Menu>
@@ -254,7 +226,7 @@ export function App({ onExport }: AppProps) {
                   minSize="120px"
                   collapsible
                   collapsedSize="36px"
-                  onResize={trackCollapsed(bottomRef, setBottomCollapsed)}
+                  onResize={trackBottomCollapsed}
                 >
                   <Stack sx={{ height: '100%' }}>
                     <PaneHeader>
@@ -283,7 +255,7 @@ export function App({ onExport }: AppProps) {
                       <TooltipIconButton
                         title={bottomCollapsed ? '펼치기' : '접기'}
                         icon={bottomCollapsed ? KeyboardArrowUp : KeyboardArrowDown}
-                        onClick={togglePanel(bottomRef)}
+                        onClick={toggleBottomPanel}
                       />
                     </PaneHeader>
                     {!bottomCollapsed && (
@@ -305,22 +277,14 @@ export function App({ onExport }: AppProps) {
           </Stack>
         </Panel>
         <Separator className="resize-handle-horizontal" />
-        <Panel
-          id="properties"
-          panelRef={propsRef}
-          defaultSize={25}
-          minSize="180px"
-          collapsible
-          collapsedSize="40px"
-          onResize={trackCollapsed(propsRef, setPropsCollapsed)}
-        >
+        <Panel id="properties" panelRef={propsRef} defaultSize={25} minSize="180px" collapsible collapsedSize="40px" onResize={trackPropsCollapsed}>
           <Stack sx={{ height: '100%', background: 'white' }}>
             <PaneHeader>
               {!propsCollapsed && <span>속성</span>}
               <TooltipIconButton
                 title={propsCollapsed ? '펼치기' : '접기'}
                 icon={propsCollapsed ? KeyboardArrowLeft : KeyboardArrowRight}
-                onClick={togglePanel(propsRef)}
+                onClick={togglePropsPanel}
               />
             </PaneHeader>
             {!propsCollapsed && (
@@ -331,14 +295,8 @@ export function App({ onExport }: AppProps) {
           </Stack>
         </Panel>
       </Group>
-      <JsonImportDialog
-        open={importOpen}
-        onClose={() => setImportOpen(false)}
-      />
-      <JsonExportDialog
-        open={exportOpen}
-        onClose={() => setExportOpen(false)}
-      />
+      <JsonImportDialog open={importOpen} onClose={() => setImportOpen(false)} />
+      <JsonExportDialog open={exportOpen} onClose={() => setExportOpen(false)} />
       <Snackbar
         open={sizeNotice !== null}
         autoHideDuration={4000}

@@ -1,21 +1,9 @@
-import {
-  Body,
-  Column,
-  Container,
-  Head,
-  Html,
-  Preview,
-  Row,
-  Section,
-} from '@react-email/components'
-import { cloneElement } from 'react'
-import type { EmailDocument, Row as RowT } from '../types/schema'
+import { Body, Column, Container, Head, Html, Preview, Row, Section } from '@react-email/components'
+import { cloneElement, type FC } from 'react'
+
 import { renderBlock } from './blocks'
-import {
-  columnPadding,
-  columnTdStyle,
-  rowSectionStyle,
-} from './styles'
+import { columnPadding, columnTdStyle, rowSectionStyle } from './styles'
+import type { EmailDocument, Row as RowT } from '../types/schema'
 
 type Sample = Record<string, string>
 
@@ -40,12 +28,10 @@ function renderRow(row: RowT, sample: Sample) {
   )
 }
 
-export function EmailDocumentRenderer({ doc }: { doc: EmailDocument }) {
+export const EmailDocumentRenderer: FC<{ doc: EmailDocument }> = ({ doc }) => {
   return (
     <Html>
-      <Head>
-        {doc.meta.preview ? <Preview>{doc.meta.preview}</Preview> : null}
-      </Head>
+      <Head>{doc.meta.preview ? <Preview>{doc.meta.preview}</Preview> : null}</Head>
       <Body
         style={{
           backgroundColor: doc.styles.backgroundColor,

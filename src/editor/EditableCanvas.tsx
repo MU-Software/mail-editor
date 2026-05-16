@@ -1,48 +1,27 @@
 import { Add } from '@mui/icons-material'
 import { Box, Button, Stack } from '@mui/material'
-import { useState, type MouseEvent } from 'react'
-import {
-  useActions,
-  useDocument,
-  useSelection,
-  useShowRawVariables,
-} from '../hooks/useDocument'
+import { useState, type FC, type MouseEvent } from 'react'
+
 import { BlockTypeMenu } from './BlockTypeMenu'
 import { EditableRow } from './EditableRow'
+import { useActions, useDocument, useSelection, useShowRawVariables } from '../hooks/useDocument'
 
 const EMPTY_SAMPLE: Record<string, string> = {}
 
-function AddRowButton({ atIndex }: { atIndex: number }) {
+const AddRowButton: FC<{ atIndex: number }> = ({ atIndex }) => {
   const { addRow } = useActions()
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   return (
-    <Stack
-      direction="row"
-      justifyContent="center"
-      onClick={(e) => e.stopPropagation()}
-      sx={{ py: 0.75, background: 'rgba(74, 158, 255, 0.05)' }}
-    >
-      <Button
-        size="small"
-        variant="outlined"
-        startIcon={<Add />}
-        onClick={(e: MouseEvent<HTMLButtonElement>) =>
-          setAnchor(e.currentTarget)
-        }
-      >
+    <Stack direction="row" justifyContent="center" onClick={(e) => e.stopPropagation()} sx={{ py: 0.75, background: 'rgba(74, 158, 255, 0.05)' }}>
+      <Button size="small" variant="outlined" startIcon={<Add />} onClick={(e: MouseEvent<HTMLButtonElement>) => setAnchor(e.currentTarget)}>
         Row 추가
       </Button>
-      <BlockTypeMenu
-        anchorEl={anchor}
-        open={Boolean(anchor)}
-        onClose={() => setAnchor(null)}
-        onSelect={(type) => addRow(atIndex, type)}
-      />
+      <BlockTypeMenu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)} onSelect={(type) => addRow(atIndex, type)} />
     </Stack>
   )
 }
 
-export function EditableCanvas() {
+export const EditableCanvas = () => {
   const styles = useDocument((d) => d.styles)
   const rows = useDocument((d) => d.rows)
   const docSampleValues = useDocument((d) => d.sampleValues)
@@ -83,13 +62,7 @@ export function EditableCanvas() {
       >
         <AddRowButton atIndex={0} />
         {rows.map((row, idx) => (
-          <EditableRow
-            key={row.id}
-            row={row}
-            sampleValues={sampleValues}
-            isFirst={idx === 0}
-            isLast={idx === rows.length - 1}
-          />
+          <EditableRow key={row.id} row={row} sampleValues={sampleValues} isFirst={idx === 0} isLast={idx === rows.length - 1} />
         ))}
         <AddRowButton atIndex={rows.length} />
       </Box>

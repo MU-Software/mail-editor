@@ -1,25 +1,23 @@
 import { Add, ArrowBack, ArrowForward, Build, Close } from '@mui/icons-material'
 import { Box } from '@mui/material'
 import { Column as EmailColumn } from '@react-email/components'
-import { memo, useState, type MouseEvent } from 'react'
+import { memo, useState, type FC, type MouseEvent } from 'react'
+
+import { BlockTypeMenu } from './BlockTypeMenu'
+import { EditableBlock } from './EditableBlock'
+import { HoverToolbar, SelectableShell } from './SelectableShell'
 import { TooltipIconButton } from '../components/TooltipIconButton'
 import { useActions, useSelectedColumnId } from '../hooks/useDocument'
 import { columnPadding, columnTdStyle } from '../render/styles'
 import type { Block, Column } from '../types/schema'
 import { stopAnd } from '../utils/events'
-import { BlockTypeMenu } from './BlockTypeMenu'
-import { EditableBlock } from './EditableBlock'
-import { HoverToolbar, SelectableShell } from './SelectableShell'
 
 type Sample = Record<string, string>
 
-function ColumnInsertHandle({
-  position,
-  onSelect,
-}: {
+const ColumnInsertHandle: FC<{
   position: 'before' | 'after'
   onSelect: (type: Block['type']) => void
-}) {
+}> = ({ position, onSelect }) => {
   const isLeft = position === 'before'
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   return (
@@ -44,36 +42,21 @@ function ColumnInsertHandle({
           setAnchor(e.currentTarget)
         }}
       />
-      <BlockTypeMenu
-        anchorEl={anchor}
-        open={Boolean(anchor)}
-        onClose={() => setAnchor(null)}
-        onSelect={onSelect}
-      />
+      <BlockTypeMenu anchorEl={anchor} open={Boolean(anchor)} onClose={() => setAnchor(null)} onSelect={onSelect} />
     </Box>
   )
 }
 
-export const EditableColumn = memo(function EditableColumn({
-  column,
-  index,
-  siblingCount,
-  totalWidth,
-  sampleValues,
-}: {
+type EditableColumnProps = {
   column: Column
   index: number
   siblingCount: number
   totalWidth: number
   sampleValues: Sample
-}) {
-  const {
-    moveColumn,
-    insertColumnBefore,
-    insertColumnAfter,
-    removeColumn,
-    setSelection,
-  } = useActions()
+}
+
+export const EditableColumn = memo<EditableColumnProps>(({ column, index, siblingCount, totalWidth, sampleValues }) => {
+  const { moveColumn, insertColumnBefore, insertColumnAfter, removeColumn, setSelection } = useActions()
   const selectedId = useSelectedColumnId()
   const selected = selectedId === column.id
   const isFirst = index === 0
@@ -106,25 +89,11 @@ export const EditableColumn = memo(function EditableColumn({
             zIndex: 12,
           }}
         >
-          <TooltipIconButton
-            title="Column 속성 편집"
-            icon={Build}
-            onClick={stopAnd(() => setSelection({ kind: 'column', id: column.id }))}
-          />
+          <TooltipIconButton title="Column 속성 편집" icon={Build} onClick={stopAnd(() => setSelection({ kind: 'column', id: column.id }))} />
           {canMoveOrDelete && (
             <>
-              <TooltipIconButton
-                title="좌로 이동"
-                icon={ArrowBack}
-                disabled={isFirst}
-                onClick={stopAnd(() => moveColumn(column.id, 'left'))}
-              />
-              <TooltipIconButton
-                title="우로 이동"
-                icon={ArrowForward}
-                disabled={isLast}
-                onClick={stopAnd(() => moveColumn(column.id, 'right'))}
-              />
+              <TooltipIconButton title="좌로 이동" icon={ArrowBack} disabled={isFirst} onClick={stopAnd(() => moveColumn(column.id, 'left'))} />
+              <TooltipIconButton title="우로 이동" icon={ArrowForward} disabled={isLast} onClick={stopAnd(() => moveColumn(column.id, 'right'))} />
               <TooltipIconButton
                 title="Column 삭제"
                 icon={Close}
@@ -137,23 +106,13 @@ export const EditableColumn = memo(function EditableColumn({
             </>
           )}
         </HoverToolbar>
-        <ColumnInsertHandle
-          position="before"
-          onSelect={(type) => insertColumnBefore(column.id, type)}
-        />
-        <ColumnInsertHandle
-          position="after"
-          onSelect={(type) => insertColumnAfter(column.id, type)}
-        />
+        <ColumnInsertHandle position="before" onSelect={(type) => insertColumnBefore(column.id, type)} />
+        <ColumnInsertHandle position="after" onSelect={(type) => insertColumnAfter(column.id, type)} />
         {column.blocks.map((block) => (
-          <EditableBlock
-            key={block.id}
-            block={block}
-            sample={sampleValues}
-            canDelete={column.blocks.length > 1}
-          />
+          <EditableBlock key={block.id} block={block} sample={sampleValues} canDelete={column.blocks.length > 1} />
         ))}
       </SelectableShell>
     </EmailColumn>
   )
 })
+EditableColumn.displayName = 'EditableColumn'

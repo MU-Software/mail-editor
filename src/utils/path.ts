@@ -7,11 +7,7 @@ export function getAtPath(obj: unknown, path: readonly string[]): unknown {
   return cur
 }
 
-export function setAtPath(
-  root: Record<string, unknown>,
-  path: readonly string[],
-  value: unknown,
-): void {
+export function setAtPath(root: Record<string, unknown>, path: readonly string[], value: unknown): void {
   if (path.length === 0) return
   let cur = root
   for (let i = 0; i < path.length - 1; i++) {

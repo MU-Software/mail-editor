@@ -5,9 +5,7 @@ export function parseEmailDocument(json: string): EmailDocument {
   try {
     parsed = JSON.parse(json)
   } catch (err) {
-    throw new Error(
-      `JSON 파싱 실패: ${err instanceof Error ? err.message : String(err)}`,
-    )
+    throw new Error(`JSON 파싱 실패: ${err instanceof Error ? err.message : String(err)}`)
   }
   const result = EmailDocumentSchema.safeParse(parsed)
   if (!result.success) {
@@ -18,10 +16,7 @@ export function parseEmailDocument(json: string): EmailDocument {
         return `  • ${path}: ${i.message}`
       })
       .join('\n')
-    const more =
-      result.error.issues.length > 5
-        ? `\n  ...외 ${result.error.issues.length - 5}개`
-        : ''
+    const more = result.error.issues.length > 5 ? `\n  ...외 ${result.error.issues.length - 5}개` : ''
     throw new Error(`유효한 EmailDocument 형식이 아닙니다:\n${issues}${more}`)
   }
   return result.data

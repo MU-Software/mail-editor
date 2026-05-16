@@ -1,38 +1,17 @@
-import {
-  FormatListBulleted,
-  FormatListNumbered,
-  HorizontalRule,
-  Image,
-  Notes,
-  SmartButton,
-  SpaceBar,
-  TextFields,
-  Title,
-} from '@mui/icons-material'
+import { FormatListBulleted, FormatListNumbered, HorizontalRule, Image, Notes, SmartButton, SpaceBar, TextFields, Title } from '@mui/icons-material'
 import type { ReactElement } from 'react'
+
 import type { Block } from '../types/schema'
 import { validateHref, warnIfAltMissing, type ValidationResult } from '../utils/validation'
 
-export type PropertyType =
-  | 'text'
-  | 'number'
-  | 'color'
-  | 'select'
-  | 'boolean'
-  | 'stringList'
-  | 'descriptionItems'
+export type PropertyType = 'text' | 'number' | 'color' | 'select' | 'boolean' | 'stringList' | 'descriptionItems'
 
 export type SelectOption = {
   value: string | number | boolean
   label: string
 }
 
-export type PropertyGroup =
-  | 'content'
-  | 'typography'
-  | 'spacing'
-  | 'background'
-  | 'border'
+export type PropertyGroup = 'content' | 'typography' | 'spacing' | 'background' | 'border'
 
 export type PropertyDef = {
   path: readonly string[]
@@ -46,13 +25,7 @@ export type PropertyDef = {
   validate?: (value: unknown) => ValidationResult
 }
 
-export const PROPERTY_GROUP_ORDER: readonly PropertyGroup[] = [
-  'content',
-  'typography',
-  'spacing',
-  'background',
-  'border',
-]
+export const PROPERTY_GROUP_ORDER: readonly PropertyGroup[] = ['content', 'typography', 'spacing', 'background', 'border']
 
 export const PROPERTY_GROUP_LABELS: Record<PropertyGroup, string> = {
   content: '콘텐츠',
@@ -62,14 +35,7 @@ export const PROPERTY_GROUP_LABELS: Record<PropertyGroup, string> = {
   border: '테두리',
 }
 
-const TYPOGRAPHY_KEYS = new Set([
-  'color',
-  'fontSize',
-  'lineHeight',
-  'fontFamily',
-  'textAlign',
-  'verticalAlign',
-])
+const TYPOGRAPHY_KEYS = new Set(['color', 'fontSize', 'lineHeight', 'fontFamily', 'textAlign', 'verticalAlign'])
 
 const SPACING_KEYS = new Set(['paddingY', 'paddingX'])
 
@@ -85,9 +51,7 @@ export function groupOfProperty(def: PropertyDef): PropertyGroup {
   return 'content'
 }
 
-export function groupProperties(
-  properties: readonly PropertyDef[],
-): Record<PropertyGroup, PropertyDef[]> {
+export function groupProperties(properties: readonly PropertyDef[]): Record<PropertyGroup, PropertyDef[]> {
   const result: Record<PropertyGroup, PropertyDef[]> = {
     content: [],
     typography: [],

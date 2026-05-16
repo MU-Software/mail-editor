@@ -1,34 +1,15 @@
-import {
-  cloneElement,
-  memo,
-  useState,
-  type CSSProperties,
-  type MouseEvent,
-  type ReactElement,
-} from 'react'
-import { useActions } from '../hooks/useDocument'
-import { renderBlock } from '../render/blocks'
+import { cloneElement, memo, useState, type CSSProperties, type FC, type MouseEvent, type ReactElement } from 'react'
 
-function withClickHandler(
-  element: ReactElement,
-  onClick: (e: MouseEvent) => void,
-): ReactElement {
-  return cloneElement(element as ReactElement<{ onClick?: (e: MouseEvent) => void }>, { onClick })
-}
-import {
-  buttonContainerStyle,
-  buttonStyle,
-  headingStyle,
-  textStyle,
-} from '../render/styles'
-import type {
-  Block,
-  ButtonBlock,
-  HeadingBlock,
-  TextBlock,
-} from '../types/schema'
 import { BlockShell } from './BlockShell'
 import { InlineTextEditor } from './InlineTextEditor'
+import { useActions } from '../hooks/useDocument'
+import { renderBlock } from '../render/blocks'
+import { buttonContainerStyle, buttonStyle, headingStyle, textStyle } from '../render/styles'
+import type { Block, ButtonBlock, HeadingBlock, TextBlock } from '../types/schema'
+
+function withClickHandler(element: ReactElement, onClick: (e: MouseEvent) => void): ReactElement {
+  return cloneElement(element as ReactElement<{ onClick?: (e: MouseEvent) => void }>, { onClick })
+}
 
 type Sample = Record<string, string>
 
@@ -50,7 +31,7 @@ function headingEditStyle(block: HeadingBlock): CSSProperties {
   }
 }
 
-function EditableText({ block, sample }: { block: TextBlock; sample: Sample }) {
+const EditableText: FC<{ block: TextBlock; sample: Sample }> = ({ block, sample }) => {
   const { updateFieldAt } = useActions()
   const [editing, setEditing] = useState(false)
 
@@ -76,13 +57,7 @@ function EditableText({ block, sample }: { block: TextBlock; sample: Sample }) {
   return withClickHandler(renderBlock(block, sample), () => setEditing(true))
 }
 
-function EditableHeading({
-  block,
-  sample,
-}: {
-  block: HeadingBlock
-  sample: Sample
-}) {
+const EditableHeading: FC<{ block: HeadingBlock; sample: Sample }> = ({ block, sample }) => {
   const { updateFieldAt } = useActions()
   const [editing, setEditing] = useState(false)
 
@@ -108,13 +83,7 @@ function EditableHeading({
   return withClickHandler(renderBlock(block, sample), () => setEditing(true))
 }
 
-function EditableButton({
-  block,
-  sample,
-}: {
-  block: ButtonBlock
-  sample: Sample
-}) {
+const EditableButton: FC<{ block: ButtonBlock; sample: Sample }> = ({ block, sample }) => {
   const { updateFieldAt } = useActions()
   const [editing, setEditing] = useState(false)
 
@@ -145,15 +114,13 @@ function EditableButton({
   })
 }
 
-export const EditableBlock = memo(function EditableBlock({
-  block,
-  sample,
-  canDelete,
-}: {
+type EditableBlockProps = {
   block: Block
   sample: Sample
   canDelete: boolean
-}) {
+}
+
+export const EditableBlock = memo<EditableBlockProps>(({ block, sample, canDelete }) => {
   return (
     <BlockShell blockId={block.id} canDelete={canDelete}>
       {(() => {
@@ -176,3 +143,4 @@ export const EditableBlock = memo(function EditableBlock({
     </BlockShell>
   )
 })
+EditableBlock.displayName = 'EditableBlock'

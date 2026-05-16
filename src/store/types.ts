@@ -1,10 +1,6 @@
 import type { Block, EmailDocument } from '../types/schema'
 
-export type Selection =
-  | { kind: 'document' }
-  | { kind: 'row'; id: string }
-  | { kind: 'column'; id: string }
-  | { kind: 'block'; id: string }
+export type Selection = { kind: 'document' } | { kind: 'row'; id: string } | { kind: 'column'; id: string } | { kind: 'block'; id: string }
 
 export type DocumentActions = {
   replaceDocument: (doc: EmailDocument) => void
@@ -25,11 +21,7 @@ export type DocumentActions = {
   removeBlock: (blockId: string) => void
   moveBlock: (blockId: string, direction: 'up' | 'down') => void
   duplicateBlock: (blockId: string) => void
-  updateFieldAt: (
-    target: Selection,
-    path: readonly string[],
-    value: unknown,
-  ) => void
+  updateFieldAt: (target: Selection, path: readonly string[], value: unknown) => void
 
   setSampleValue: (name: string, value: string) => void
   removeSampleValue: (name: string) => void

@@ -1,13 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material'
-import {
-  PROPERTY_GROUP_LABELS,
-  PROPERTY_GROUP_ORDER,
-  groupProperties,
-  type PropertyDef,
-} from '../../editor/schemas'
-import { useActions } from '../../hooks/useDocument'
-import type { Selection } from '../../store/types'
-import { getAtPath } from '../../utils/path'
+import type { FC } from 'react'
+
 import {
   DeferredColorField,
   DeferredNumberField,
@@ -17,16 +10,18 @@ import {
   StringListField,
   type DescriptionItem,
 } from './fields'
+import { PROPERTY_GROUP_LABELS, PROPERTY_GROUP_ORDER, groupProperties, type PropertyDef } from '../../editor/schemas'
+import { useActions } from '../../hooks/useDocument'
+import type { Selection } from '../../store/types'
+import { getAtPath } from '../../utils/path'
 
-function FieldFor({
-  def,
-  value,
-  onCommit,
-}: {
+type FieldForProps = {
   def: PropertyDef
   value: unknown
   onCommit: (v: unknown) => void
-}) {
+}
+
+const FieldFor: FC<FieldForProps> = ({ def, value, onCommit }) => {
   const warnMessage = def.warn?.(value)
   const helperText = warnMessage ? (
     <Box component="span" sx={{ color: 'warning.main' }}>
@@ -53,61 +48,28 @@ function FieldFor({
         />
       )
     case 'number':
-      return (
-        <DeferredNumberField
-          label={def.label}
-          value={value as number | undefined}
-          onCommit={onCommit}
-        />
-      )
+      return <DeferredNumberField label={def.label} value={value as number | undefined} onCommit={onCommit} />
     case 'color':
-      return (
-        <DeferredColorField
-          label={def.label}
-          value={(value as string | undefined) ?? ((def.default as string) ?? '')}
-          onCommit={onCommit}
-        />
-      )
+      return <DeferredColorField label={def.label} value={(value as string | undefined) ?? (def.default as string) ?? ''} onCommit={onCommit} />
     case 'select':
       if (!def.options) return null
-      return (
-        <SelectField
-          label={def.label}
-          value={value as string | number | boolean | undefined}
-          options={def.options}
-          onCommit={onCommit}
-        />
-      )
+      return <SelectField label={def.label} value={value as string | number | boolean | undefined} options={def.options} onCommit={onCommit} />
     case 'stringList':
-      return (
-        <StringListField
-          label={def.label}
-          value={(value as string[] | undefined) ?? []}
-          onCommit={onCommit}
-        />
-      )
+      return <StringListField label={def.label} value={(value as string[] | undefined) ?? []} onCommit={onCommit} />
     case 'descriptionItems':
-      return (
-        <DescriptionItemsField
-          label={def.label}
-          value={(value as DescriptionItem[] | undefined) ?? []}
-          onCommit={onCommit}
-        />
-      )
+      return <DescriptionItemsField label={def.label} value={(value as DescriptionItem[] | undefined) ?? []} onCommit={onCommit} />
     case 'boolean':
       return null
   }
 }
 
-export function PropertiesForm({
-  target,
-  obj,
-  properties,
-}: {
+type PropertiesFormProps = {
   target: Selection
   obj: unknown
   properties: readonly PropertyDef[]
-}) {
+}
+
+export const PropertiesForm: FC<PropertiesFormProps> = ({ target, obj, properties }) => {
   const { updateFieldAt } = useActions()
   const grouped = groupProperties(properties)
   return (
@@ -130,14 +92,7 @@ export function PropertiesForm({
             </Typography>
             {items.map((def) => {
               const value = getAtPath(obj, def.path)
-              return (
-                <FieldFor
-                  key={def.path.join('.')}
-                  def={def}
-                  value={value}
-                  onCommit={(v) => updateFieldAt(target, def.path, v)}
-                />
-              )
+              return <FieldFor key={def.path.join('.')} def={def} value={value} onCommit={(v) => updateFieldAt(target, def.path, v)} />
             })}
           </Stack>
         )

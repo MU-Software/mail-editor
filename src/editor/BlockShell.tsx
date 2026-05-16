@@ -1,31 +1,23 @@
-import {
-  Add,
-  ArrowDownward,
-  ArrowUpward,
-  Build,
-  Close,
-  ContentCopy,
-} from '@mui/icons-material'
+import { Add, ArrowDownward, ArrowUpward, Build, Close, ContentCopy } from '@mui/icons-material'
 import { Box } from '@mui/material'
-import { useState, type MouseEvent, type ReactNode } from 'react'
+import { useState, type FC, type MouseEvent, type ReactNode } from 'react'
+
+import { BlockTypeMenu } from './BlockTypeMenu'
+import { HoverToolbar, SelectableShell } from './SelectableShell'
 import { TooltipIconButton } from '../components/TooltipIconButton'
 import { useActions, useSelectedBlockId } from '../hooks/useDocument'
 import type { Block } from '../types/schema'
 import { stopAnd } from '../utils/events'
-import { BlockTypeMenu } from './BlockTypeMenu'
-import { HoverToolbar, SelectableShell } from './SelectableShell'
 
 type InsertMode = 'before' | 'after'
 
-function InsertHandle({
-  position,
-  forceVisible,
-  onOpen,
-}: {
+type InsertHandleProps = {
   position: InsertMode
   forceVisible: boolean
   onOpen: (e: MouseEvent<HTMLButtonElement>) => void
-}) {
+}
+
+const InsertHandle: FC<InsertHandleProps> = ({ position, forceVisible, onOpen }) => {
   const above = position === 'before'
   return (
     <Box
@@ -41,33 +33,19 @@ function InsertHandle({
         zIndex: 15,
       }}
     >
-      <TooltipIconButton
-        title={above ? '위에 블록 추가' : '아래에 블록 추가'}
-        icon={Add}
-        variant="outlined"
-        onClick={onOpen}
-      />
+      <TooltipIconButton title={above ? '위에 블록 추가' : '아래에 블록 추가'} icon={Add} variant="outlined" onClick={onOpen} />
     </Box>
   )
 }
 
-export function BlockShell({
-  blockId,
-  canDelete,
-  children,
-}: {
+type BlockShellProps = {
   blockId: string
   canDelete: boolean
   children: ReactNode
-}) {
-  const {
-    moveBlock,
-    duplicateBlock,
-    removeBlock,
-    insertBlockBefore,
-    insertBlockAfter,
-    setSelection,
-  } = useActions()
+}
+
+export const BlockShell: FC<BlockShellProps> = ({ blockId, canDelete, children }) => {
+  const { moveBlock, duplicateBlock, removeBlock, insertBlockBefore, insertBlockAfter, setSelection } = useActions()
   const selectedId = useSelectedBlockId()
   const selected = selectedId === blockId
 
@@ -75,12 +53,11 @@ export function BlockShell({
   const [menuMode, setMenuMode] = useState<InsertMode>('after')
   const menuOpen = Boolean(menuAnchor)
 
-  const openInsertMenu =
-    (mode: InsertMode) => (e: MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation()
-      setMenuMode(mode)
-      setMenuAnchor(e.currentTarget)
-    }
+  const openInsertMenu = (mode: InsertMode) => (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    setMenuMode(mode)
+    setMenuAnchor(e.currentTarget)
+  }
 
   const handleSelect = (type: Block['type']) => {
     if (menuMode === 'before') insertBlockBefore(blockId, type)
@@ -110,26 +87,10 @@ export function BlockShell({
           zIndex: 14,
         }}
       >
-        <TooltipIconButton
-          title="Block 속성 편집"
-          icon={Build}
-          onClick={stopAnd(() => setSelection({ kind: 'block', id: blockId }))}
-        />
-        <TooltipIconButton
-          title="위로 이동"
-          icon={ArrowUpward}
-          onClick={stopAnd(() => moveBlock(blockId, 'up'))}
-        />
-        <TooltipIconButton
-          title="아래로 이동"
-          icon={ArrowDownward}
-          onClick={stopAnd(() => moveBlock(blockId, 'down'))}
-        />
-        <TooltipIconButton
-          title="복제"
-          icon={ContentCopy}
-          onClick={stopAnd(() => duplicateBlock(blockId))}
-        />
+        <TooltipIconButton title="Block 속성 편집" icon={Build} onClick={stopAnd(() => setSelection({ kind: 'block', id: blockId }))} />
+        <TooltipIconButton title="위로 이동" icon={ArrowUpward} onClick={stopAnd(() => moveBlock(blockId, 'up'))} />
+        <TooltipIconButton title="아래로 이동" icon={ArrowDownward} onClick={stopAnd(() => moveBlock(blockId, 'down'))} />
+        <TooltipIconButton title="복제" icon={ContentCopy} onClick={stopAnd(() => duplicateBlock(blockId))} />
         {canDelete && (
           <TooltipIconButton
             title="블록 삭제"
@@ -145,23 +106,10 @@ export function BlockShell({
 
       {children}
 
-      <InsertHandle
-        position="before"
-        forceVisible={menuOpen}
-        onOpen={openInsertMenu('before')}
-      />
-      <InsertHandle
-        position="after"
-        forceVisible={menuOpen}
-        onOpen={openInsertMenu('after')}
-      />
+      <InsertHandle position="before" forceVisible={menuOpen} onOpen={openInsertMenu('before')} />
+      <InsertHandle position="after" forceVisible={menuOpen} onOpen={openInsertMenu('after')} />
 
-      <BlockTypeMenu
-        anchorEl={menuAnchor}
-        open={menuOpen}
-        onClose={() => setMenuAnchor(null)}
-        onSelect={handleSelect}
-      />
+      <BlockTypeMenu anchorEl={menuAnchor} open={menuOpen} onClose={() => setMenuAnchor(null)} onSelect={handleSelect} />
     </SelectableShell>
   )
 }

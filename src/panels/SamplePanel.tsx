@@ -1,23 +1,12 @@
-import {
-  Box,
-  FormControlLabel,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
-} from '@mui/material'
 import { Close } from '@mui/icons-material'
-import { TooltipIconButton } from '../components/TooltipIconButton'
+import { Box, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material'
 import { useMemo } from 'react'
-import {
-  useActions,
-  useDocument,
-  useSetShowRawVariables,
-  useShowRawVariables,
-} from '../hooks/useDocument'
+
+import { TooltipIconButton } from '../components/TooltipIconButton'
+import { useActions, useDocument, useSetShowRawVariables, useShowRawVariables } from '../hooks/useDocument'
 import { extractVariableNames } from '../utils/extractVariables'
 
-export function SamplePanel() {
+export const SamplePanel = () => {
   const doc = useDocument((d) => d)
   const sampleValues = doc.sampleValues
   const detected = useMemo(() => extractVariableNames(doc), [doc])
@@ -56,8 +45,7 @@ export function SamplePanel() {
           },
         }}
       >
-        문서에서 사용된 <code>{'{{ name }}'}</code> 변수가 자동 감지됩니다.
-        여기서 입력한 값은 미리보기에서만 치환되며, export 시에는{' '}
+        문서에서 사용된 <code>{'{{ name }}'}</code> 변수가 자동 감지됩니다. 여기서 입력한 값은 미리보기에서만 치환되며, export 시에는{' '}
         <code>{'{{ name }}'}</code> 그대로 유지됩니다.
       </Typography>
       <FormControlLabel
@@ -66,31 +54,15 @@ export function SamplePanel() {
           ml: 0,
           '& .MuiFormControlLabel-label': { fontSize: 12 },
         }}
-        control={
-          <Switch
-            size="small"
-            checked={showRawVariables}
-            onChange={(e) => setShowRawVariables(e.target.checked)}
-          />
-        }
+        control={<Switch size="small" checked={showRawVariables} onChange={(e) => setShowRawVariables(e.target.checked)} />}
         label="변수 그대로 보기"
       />
       {rows.length === 0 ? (
-        <Typography
-          sx={{ color: 'text.disabled', fontSize: 12, fontStyle: 'italic' }}
-        >
-          사용 중인 변수가 없습니다.
-        </Typography>
+        <Typography sx={{ color: 'text.disabled', fontSize: 12, fontStyle: 'italic' }}>사용 중인 변수가 없습니다.</Typography>
       ) : (
         <Stack spacing={1}>
           {rows.map((row) => (
-            <Stack
-              key={row.name}
-              direction="row"
-              spacing={1}
-              alignItems="center"
-              sx={{ opacity: row.used ? 1 : 0.5 }}
-            >
+            <Stack key={row.name} direction="row" spacing={1} alignItems="center" sx={{ opacity: row.used ? 1 : 0.5 }}>
               <Box
                 component="code"
                 sx={{
@@ -117,13 +89,7 @@ export function SamplePanel() {
                   },
                 }}
               />
-              {!row.used && (
-                <TooltipIconButton
-                  title="미사용 변수 제거"
-                  icon={Close}
-                  onClick={() => removeSampleValue(row.name)}
-                />
-              )}
+              {!row.used && <TooltipIconButton title="미사용 변수 제거" icon={Close} onClick={() => removeSampleValue(row.name)} />}
             </Stack>
           ))}
         </Stack>

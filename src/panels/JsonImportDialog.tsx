@@ -1,34 +1,13 @@
-import {
-  Alert,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  TextField
-} from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material'
+import { useState, type FC } from 'react'
+
 import { useActions } from '../hooks/useDocument'
 import { parseEmailDocument } from '../utils/jsonIO'
 
-export function JsonImportDialog({
-  open,
-  onClose,
-}: {
-  open: boolean
-  onClose: () => void
-}) {
+const JsonImportDialogBody: FC<{ onClose: () => void }> = ({ onClose }) => {
   const { replaceDocument, setSelection } = useActions()
   const [text, setText] = useState('')
   const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (!open) {
-      setText('')
-      setError(null)
-    }
-  }, [open])
 
   const handleImport = () => {
     try {
@@ -42,10 +21,7 @@ export function JsonImportDialog({
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
-        JSON 불러오기
-      </DialogTitle>
+    <>
       <DialogContent>
         <Stack spacing={2} sx={{ pt: 1 }}>
           <TextField
@@ -73,14 +49,22 @@ export function JsonImportDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>취소</Button>
-        <Button
-          variant="contained"
-          onClick={handleImport}
-          disabled={!text.trim()}
-        >
+        <Button variant="contained" onClick={handleImport} disabled={!text.trim()}>
           불러오기
         </Button>
       </DialogActions>
+    </>
+  )
+}
+
+export const JsonImportDialog: FC<{
+  open: boolean
+  onClose: () => void
+}> = ({ open, onClose }) => {
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+      <DialogTitle>JSON 불러오기</DialogTitle>
+      {open && <JsonImportDialogBody onClose={onClose} />}
     </Dialog>
   )
 }

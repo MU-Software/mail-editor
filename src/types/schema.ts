@@ -27,14 +27,7 @@ const TextBlockSchema = z.object({
 const HeadingBlockSchema = z.object({
   id: z.string(),
   type: z.literal('heading'),
-  level: z.union([
-    z.literal(1),
-    z.literal(2),
-    z.literal(3),
-    z.literal(4),
-    z.literal(5),
-    z.literal(6),
-  ]),
+  level: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5), z.literal(6)]),
   content: z.string(),
   styles: z
     .object({

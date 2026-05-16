@@ -1,5 +1,6 @@
 import { Box, Stack } from '@mui/material'
-import { type MouseEvent, type ReactNode } from 'react'
+import { type FC, type MouseEvent, type ReactNode } from 'react'
+
 import { useActions } from '../hooks/useDocument'
 
 type SelectableKind = 'row' | 'column' | 'block'
@@ -14,17 +15,7 @@ const SELECTED_OUTLINE = '2px solid #4a9eff'
 
 type SxObject = Record<string, unknown>
 
-export function SelectableShell({
-  kind,
-  id,
-  selected,
-  outlineOffset,
-  hoverOutline = SELECTED_OUTLINE,
-  hoverOutlineOffset = outlineOffset,
-  hoverReveals,
-  sx,
-  children,
-}: {
+type SelectableShellProps = {
   kind: SelectableKind
   id: string
   selected: boolean
@@ -34,11 +25,21 @@ export function SelectableShell({
   hoverReveals: readonly string[]
   sx?: SxObject
   children: ReactNode
-}) {
+}
+
+export const SelectableShell: FC<SelectableShellProps> = ({
+  kind,
+  id,
+  selected,
+  outlineOffset,
+  hoverOutline = SELECTED_OUTLINE,
+  hoverOutlineOffset = outlineOffset,
+  hoverReveals,
+  sx,
+  children,
+}) => {
   const { setSelection } = useActions()
-  const reveal: SxObject = Object.fromEntries(
-    hoverReveals.map((c) => [`&:hover > .${c}`, { display: 'flex' }]),
-  )
+  const reveal: SxObject = Object.fromEntries(hoverReveals.map((c) => [`&:hover > .${c}`, { display: 'flex' }]))
   return (
     <Box
       {...{ [DATA_ATTR[kind]]: id }}
@@ -50,9 +51,7 @@ export function SelectableShell({
         position: 'relative',
         outline: selected ? SELECTED_OUTLINE : undefined,
         outlineOffset: selected ? outlineOffset : undefined,
-        '&:hover': !selected
-          ? { outline: hoverOutline, outlineOffset: hoverOutlineOffset }
-          : undefined,
+        '&:hover': !selected ? { outline: hoverOutline, outlineOffset: hoverOutlineOffset } : undefined,
         ...reveal,
         ...sx,
       }}
@@ -62,17 +61,14 @@ export function SelectableShell({
   )
 }
 
-export function HoverToolbar({
-  className,
-  sx,
-  spacing,
-  children,
-}: {
+type HoverToolbarProps = {
   className: string
   sx: SxObject
   spacing?: number
   children: ReactNode
-}) {
+}
+
+export const HoverToolbar: FC<HoverToolbarProps> = ({ className, sx, spacing, children }) => {
   return (
     <Stack
       direction="row"

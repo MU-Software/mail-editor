@@ -1,12 +1,6 @@
 import type { CSSProperties } from 'react'
-import type {
-  ButtonBlock,
-  Column,
-  HeadingBlock,
-  HrBlock,
-  ImageBlock,
-  Row,
-} from '../types/schema'
+
+import type { ButtonBlock, Column, HeadingBlock, HrBlock, ImageBlock, Row } from '../types/schema'
 
 type TextLikeStyles = {
   color?: string
@@ -21,10 +15,7 @@ type BorderStyles = {
   borderColor?: string
 }
 
-export function paddingValue(
-  y: number | undefined,
-  x: number | undefined,
-): string | undefined {
+export function paddingValue(y: number | undefined, x: number | undefined): string | undefined {
   if (y === undefined && x === undefined) return undefined
   return `${y ?? 0}px ${x ?? 0}px`
 }

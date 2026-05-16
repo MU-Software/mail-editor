@@ -1,36 +1,28 @@
-import {
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  type PopoverOrigin,
-} from '@mui/material'
-import type { Block } from '../types/schema'
-import { BLOCK_TYPES } from './schemas'
+import { ListItemIcon, ListItemText, Menu, MenuItem, type PopoverOrigin } from '@mui/material'
+import type { FC } from 'react'
 
-export function BlockTypeMenu({
-  anchorEl,
-  open,
-  onClose,
-  onSelect,
-  anchorOrigin = { vertical: 'bottom', horizontal: 'center' },
-  transformOrigin = { vertical: 'top', horizontal: 'center' },
-}: {
+import { BLOCK_TYPES } from './schemas'
+import type { Block } from '../types/schema'
+
+type BlockTypeMenuProps = {
   anchorEl: HTMLElement | null
   open: boolean
   onClose: () => void
   onSelect: (type: Block['type']) => void
   anchorOrigin?: PopoverOrigin
   transformOrigin?: PopoverOrigin
-}) {
+}
+
+export const BlockTypeMenu: FC<BlockTypeMenuProps> = ({
+  anchorEl,
+  open,
+  onClose,
+  onSelect,
+  anchorOrigin = { vertical: 'bottom', horizontal: 'center' },
+  transformOrigin = { vertical: 'top', horizontal: 'center' },
+}) => {
   return (
-    <Menu
-      anchorEl={anchorEl}
-      open={open}
-      onClose={onClose}
-      anchorOrigin={anchorOrigin}
-      transformOrigin={transformOrigin}
-    >
+    <Menu anchorEl={anchorEl} open={open} onClose={onClose} anchorOrigin={anchorOrigin} transformOrigin={transformOrigin}>
       {BLOCK_TYPES.map((opt) => (
         <MenuItem
           key={opt.type}

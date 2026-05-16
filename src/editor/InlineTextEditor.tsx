@@ -8,41 +8,24 @@ import {
   Link as LinkIcon,
   type SvgIconComponent,
 } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  Menu,
-  Stack,
-  type SxProps,
-  type Theme,
-} from '@mui/material'
+import { Box, Button, Menu, Stack, type SxProps, type Theme } from '@mui/material'
 import { Color } from '@tiptap/extension-color'
 import HighlightExt from '@tiptap/extension-highlight'
 import LinkExt from '@tiptap/extension-link'
 import { TextStyle } from '@tiptap/extension-text-style'
 import UnderlineExt from '@tiptap/extension-underline'
-import {
-  Editor,
-  EditorContent,
-  Extension,
-  useEditor,
-  useEditorState,
-} from '@tiptap/react'
+import { type Editor, EditorContent, Extension, useEditor, useEditorState } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type FC } from 'react'
+
 import { TooltipIconButton } from '../components/TooltipIconButton'
-import {
-  validateHref,
-  validateVariableMarkIntegrity,
-} from '../utils/validation'
+import { validateHref, validateVariableMarkIntegrity } from '../utils/validation'
 
 const DEFAULT_COLOR = '#000000'
 const DEFAULT_HIGHLIGHT = '#fff7a8'
 
 function normalize(html: string): string {
-  return html
-    .replace(/<\/p>\s*<p>/g, '<br>')
-    .replace(/^<p>(.*?)<\/p>\s*$/s, '$1')
+  return html.replace(/<\/p>\s*<p>/g, '<br>').replace(/^<p>(.*?)<\/p>\s*$/s, '$1')
 }
 
 function runWithIntegrity(editor: Editor, apply: () => void) {
@@ -72,9 +55,7 @@ const ValidatedFormatShortcuts = Extension.create({
       Object.entries(FORMAT_SHORTCUTS).map(([key, op]) => [
         key,
         () => {
-          runWithIntegrity(this.editor, () =>
-            op(this.editor.chain().focus()).run(),
-          )
+          runWithIntegrity(this.editor, () => op(this.editor.chain().focus()).run())
           return true
         },
       ]),
@@ -82,15 +63,7 @@ const ValidatedFormatShortcuts = Extension.create({
   },
 })
 
-export function InlineTextEditor({
-  initialHtml,
-  onCommit,
-  onChange,
-  onCancel,
-  style,
-  contentSx,
-  toolbarPosition = 'floating',
-}: {
+type InlineTextEditorProps = {
   initialHtml: string
   onCommit: (html: string) => void
   onChange?: (html: string) => void
@@ -98,7 +71,17 @@ export function InlineTextEditor({
   style?: CSSProperties
   contentSx?: SxProps<Theme>
   toolbarPosition?: 'floating' | 'inline'
-}) {
+}
+
+export const InlineTextEditor: FC<InlineTextEditorProps> = ({
+  initialHtml,
+  onCommit,
+  onChange,
+  onCancel,
+  style,
+  contentSx,
+  toolbarPosition = 'floating',
+}) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -124,7 +107,9 @@ export function InlineTextEditor({
   })
 
   const onChangeRef = useRef(onChange)
-  onChangeRef.current = onChange
+  useEffect(() => {
+    onChangeRef.current = onChange
+  }, [onChange])
 
   useEffect(() => {
     if (!editor) return
@@ -165,8 +150,7 @@ export function InlineTextEditor({
       strike: editor?.isActive('strike') ?? false,
       link: editor?.isActive('link') ?? false,
       color: (editor?.getAttributes('textStyle').color as string | undefined) ?? null,
-      highlight:
-        (editor?.getAttributes('highlight').color as string | undefined) ?? null,
+      highlight: (editor?.getAttributes('highlight').color as string | undefined) ?? null,
     }),
   })
 
@@ -175,15 +159,12 @@ export function InlineTextEditor({
   const activeBtnSx = (active: boolean) => ({
     background: active ? 'rgba(74, 158, 255, 0.18)' : undefined,
     '&:hover': {
-      background: active
-        ? 'rgba(74, 158, 255, 0.28)'
-        : 'rgba(0, 0, 0, 0.04)',
+      background: active ? 'rgba(74, 158, 255, 0.28)' : 'rgba(0, 0, 0, 0.04)',
     },
   })
 
-  const runFormat = (
-    op: (c: ReturnType<Editor['chain']>) => ReturnType<Editor['chain']>,
-  ) => runWithIntegrity(editor, () => op(editor.chain().focus()).run())
+  const runFormat = (op: (c: ReturnType<Editor['chain']>) => ReturnType<Editor['chain']>) =>
+    runWithIntegrity(editor, () => op(editor.chain().focus()).run())
 
   const toggleBold = () => runFormat((c) => c.toggleBold())
   const toggleItalic = () => runFormat((c) => c.toggleItalic())
@@ -191,8 +172,7 @@ export function InlineTextEditor({
   const toggleStrike = () => runFormat((c) => c.toggleStrike())
   const setColor = (color: string) => runFormat((c) => c.setColor(color))
   const unsetColor = () => runFormat((c) => c.unsetColor())
-  const setHighlight = (color: string) =>
-    runFormat((c) => c.setHighlight({ color }))
+  const setHighlight = (color: string) => runFormat((c) => c.setHighlight({ color }))
   const unsetHighlight = () => runFormat((c) => c.unsetHighlight())
 
   const toggleLink = () => {
@@ -223,10 +203,7 @@ export function InlineTextEditor({
     : { mb: 0.5 }
 
   return (
-    <Box
-      style={style}
-      sx={floating ? { position: 'relative' } : undefined}
-    >
+    <Box style={style} sx={floating ? { position: 'relative' } : undefined}>
       <Stack
         direction="row"
         spacing={0.25}
@@ -313,15 +290,7 @@ export function InlineTextEditor({
   )
 }
 
-function ColorPickerButton({
-  title,
-  icon,
-  activeColor,
-  defaultColor,
-  activeBtnSx,
-  onSet,
-  onClear,
-}: {
+type ColorPickerButtonProps = {
   title: string
   icon: SvgIconComponent
   activeColor: string | null
@@ -329,7 +298,9 @@ function ColorPickerButton({
   activeBtnSx: (active: boolean) => SxProps<Theme>
   onSet: (color: string) => void
   onClear: () => void
-}) {
+}
+
+const ColorPickerButton: FC<ColorPickerButtonProps> = ({ title, icon, activeColor, defaultColor, activeBtnSx, onSet, onClear }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const active = activeColor !== null
   const swatch = activeColor ?? defaultColor
@@ -342,9 +313,7 @@ function ColorPickerButton({
           icon={icon}
           color={active ? 'primary' : 'default'}
           sx={activeBtnSx(active)}
-          onClick={(e: React.MouseEvent<HTMLElement>) =>
-            setAnchorEl(e.currentTarget)
-          }
+          onClick={(e: React.MouseEvent<HTMLElement>) => setAnchorEl(e.currentTarget)}
         />
         <Box
           aria-hidden

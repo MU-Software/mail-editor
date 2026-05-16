@@ -1,18 +1,13 @@
-import {
-  ArrowDownward,
-  ArrowUpward,
-  Build,
-  Close,
-  ContentCopy,
-} from '@mui/icons-material'
+import { ArrowDownward, ArrowUpward, Build, Close, ContentCopy } from '@mui/icons-material'
 import { Row as EmailRow, Section } from '@react-email/components'
 import { memo } from 'react'
+
+import { EditableColumn } from './EditableColumn'
+import { HoverToolbar, SelectableShell } from './SelectableShell'
 import { TooltipIconButton } from '../components/TooltipIconButton'
 import { useActions, useSelectedRowId } from '../hooks/useDocument'
 import { rowSectionStyle } from '../render/styles'
 import type { Row } from '../types/schema'
-import { EditableColumn } from './EditableColumn'
-import { HoverToolbar, SelectableShell } from './SelectableShell'
 
 type Sample = Record<string, string>
 
@@ -33,13 +28,7 @@ export const EditableRow = memo(function EditableRow({
   const totalWidth = row.columns.reduce((s, c) => s + (c.width || 1), 0)
 
   return (
-    <SelectableShell
-      kind="row"
-      id={row.id}
-      selected={selected}
-      outlineOffset="-2px"
-      hoverReveals={['row-controls']}
-    >
+    <SelectableShell kind="row" id={row.id} selected={selected} outlineOffset="-2px" hoverReveals={['row-controls']}>
       <HoverToolbar
         className="row-controls"
         spacing={0.25}
@@ -57,34 +46,11 @@ export const EditableRow = memo(function EditableRow({
           },
         }}
       >
-        <TooltipIconButton
-          title="Row 속성 편집"
-          icon={Build}
-          onClick={() => setSelection({ kind: 'row', id: row.id })}
-        />
-        <TooltipIconButton
-          title="위로 이동"
-          icon={ArrowUpward}
-          onClick={() => moveRow(row.id, 'up')}
-          disabled={isFirst}
-        />
-        <TooltipIconButton
-          title="아래로 이동"
-          icon={ArrowDownward}
-          onClick={() => moveRow(row.id, 'down')}
-          disabled={isLast}
-        />
-        <TooltipIconButton
-          title="복제"
-          icon={ContentCopy}
-          onClick={() => duplicateRow(row.id)}
-        />
-        <TooltipIconButton
-          title="Row 삭제"
-          icon={Close}
-          sx={{ '&:hover': { background: 'rgba(255,0,0,1)' } }}
-          onClick={() => removeRow(row.id)}
-        />
+        <TooltipIconButton title="Row 속성 편집" icon={Build} onClick={() => setSelection({ kind: 'row', id: row.id })} />
+        <TooltipIconButton title="위로 이동" icon={ArrowUpward} onClick={() => moveRow(row.id, 'up')} disabled={isFirst} />
+        <TooltipIconButton title="아래로 이동" icon={ArrowDownward} onClick={() => moveRow(row.id, 'down')} disabled={isLast} />
+        <TooltipIconButton title="복제" icon={ContentCopy} onClick={() => duplicateRow(row.id)} />
+        <TooltipIconButton title="Row 삭제" icon={Close} sx={{ '&:hover': { background: 'rgba(255,0,0,1)' } }} onClick={() => removeRow(row.id)} />
       </HoverToolbar>
       <Section style={rowSectionStyle(row.styles)}>
         <EmailRow>

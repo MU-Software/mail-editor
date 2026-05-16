@@ -1,10 +1,7 @@
 import { useShallow } from 'zustand/shallow'
+
 import { useDocumentStore } from '../store/store'
-import type {
-  DocumentActions,
-  Selection,
-  UndoControls,
-} from '../store/types'
+import type { DocumentActions, Selection, UndoControls } from '../store/types'
 import type { Block, Column, EmailDocument, Row } from '../types/schema'
 import { findBlock, findColumn, findRow } from '../utils/locate'
 
@@ -25,21 +22,15 @@ export function useSetShowRawVariables(): (value: boolean) => void {
 }
 
 export function useSelectedBlockId(): string | null {
-  return useDocumentStore((state) =>
-    state.selection?.kind === 'block' ? state.selection.id : null,
-  )
+  return useDocumentStore((state) => (state.selection?.kind === 'block' ? state.selection.id : null))
 }
 
 export function useSelectedRowId(): string | null {
-  return useDocumentStore((state) =>
-    state.selection?.kind === 'row' ? state.selection.id : null,
-  )
+  return useDocumentStore((state) => (state.selection?.kind === 'row' ? state.selection.id : null))
 }
 
 export function useSelectedColumnId(): string | null {
-  return useDocumentStore((state) =>
-    state.selection?.kind === 'column' ? state.selection.id : null,
-  )
+  return useDocumentStore((state) => (state.selection?.kind === 'column' ? state.selection.id : null))
 }
 
 export function useSelectedTarget():

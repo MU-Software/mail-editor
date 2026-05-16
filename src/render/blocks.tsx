@@ -1,12 +1,8 @@
-import {
-  Button,
-  Heading,
-  Hr,
-  Img,
-  Link,
-  Text,
-} from '@react-email/components'
+import { Button, Heading, Hr, Img, Link, Text } from '@react-email/components'
 import { Fragment, type ReactElement } from 'react'
+
+import { buttonContainerStyle, buttonStyle, headingStyle, hrStyle, imageContainerStyle, imageInlineStyle, listStyle, textStyle } from './styles'
+import { substituteVariables } from './variables'
 import type {
   Block,
   ButtonBlock,
@@ -19,17 +15,6 @@ import type {
   TextBlock,
   UnorderedListBlock,
 } from '../types/schema'
-import {
-  buttonContainerStyle,
-  buttonStyle,
-  headingStyle,
-  hrStyle,
-  imageContainerStyle,
-  imageInlineStyle,
-  listStyle,
-  textStyle,
-} from './styles'
-import { substituteVariables } from './variables'
 
 type Sample = Record<string, string>
 
@@ -47,7 +32,7 @@ function renderTextBlock(block: TextBlock, sample: Sample) {
 function renderHeadingBlock(block: HeadingBlock, sample: Sample) {
   return (
     <Heading
-      as={`h${block.level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'}
+      as={`h${block.level}`}
       style={headingStyle(block.styles)}
       dangerouslySetInnerHTML={{
         __html: substituteVariables(block.content, sample),
@@ -57,15 +42,7 @@ function renderHeadingBlock(block: HeadingBlock, sample: Sample) {
 }
 
 function renderImageBlock(block: ImageBlock) {
-  const img = (
-    <Img
-      src={block.src}
-      alt={block.alt}
-      width={block.width}
-      height={block.height}
-      style={imageInlineStyle(block.styles)}
-    />
-  )
+  const img = <Img src={block.src} alt={block.alt} width={block.width} height={block.height} style={imageInlineStyle(block.styles)} />
   const wrapped = block.href ? <Link href={block.href}>{img}</Link> : img
   return <span style={imageContainerStyle(block.styles)}>{wrapped}</span>
 }
@@ -96,10 +73,7 @@ function renderOrderedListBlock(block: OrderedListBlock, sample: Sample) {
   return (
     <ol style={listStyle(block.styles)}>
       {block.items.map((item, i) => (
-        <li
-          key={i}
-          dangerouslySetInnerHTML={{ __html: substituteVariables(item, sample) }}
-        />
+        <li key={i} dangerouslySetInnerHTML={{ __html: substituteVariables(item, sample) }} />
       ))}
     </ol>
   )
@@ -109,19 +83,13 @@ function renderUnorderedListBlock(block: UnorderedListBlock, sample: Sample) {
   return (
     <ul style={listStyle(block.styles)}>
       {block.items.map((item, i) => (
-        <li
-          key={i}
-          dangerouslySetInnerHTML={{ __html: substituteVariables(item, sample) }}
-        />
+        <li key={i} dangerouslySetInnerHTML={{ __html: substituteVariables(item, sample) }} />
       ))}
     </ul>
   )
 }
 
-function renderDescriptionListBlock(
-  block: DescriptionListBlock,
-  sample: Sample,
-) {
+function renderDescriptionListBlock(block: DescriptionListBlock, sample: Sample) {
   return (
     <dl style={textStyle(block.styles)}>
       {block.items.map((item, i) => (

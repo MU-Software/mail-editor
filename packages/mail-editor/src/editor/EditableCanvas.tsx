@@ -54,6 +54,7 @@ export const EditableCanvas = () => {
           position: 'relative',
           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
           width: styles.width ?? 600,
+          height: 'fit-content',
           backgroundColor: styles.contentBackgroundColor ?? '#ffffff',
           fontFamily: styles.fontFamily,
           outline: documentSelected ? '2px solid #4a9eff' : undefined,

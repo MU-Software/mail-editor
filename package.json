@@ -1,43 +1,17 @@
 {
-  "name": "mail_editor",
+  "name": "mail-editor-monorepo",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
   "type": "module",
-  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
+    "dev": "pnpm --filter playground dev",
+    "build": "pnpm -r build",
+    "build:package": "pnpm --filter @musoftware/mail-editor build",
+    "build:playground": "pnpm --filter playground build",
     "lint": "eslint .",
     "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "packageManager": "pnpm@10.26.2",
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^7.3.11",
-    "@mui/material": "^7.3.11",
-    "@react-email/components": "^1.0.12",
-    "@react-email/render": "^2.0.8",
-    "@tiptap/extension-color": "^3.23.4",
-    "@tiptap/extension-highlight": "^3.23.4",
-    "@tiptap/extension-link": "^3.23.4",
-    "@tiptap/extension-text-style": "^3.23.4",
-    "@tiptap/extension-underline": "^3.23.4",
-    "@tiptap/pm": "^3.23.4",
-    "@tiptap/react": "^3.23.4",
-    "@tiptap/starter-kit": "^3.23.4",
-    "immer": "^11.1.8",
-    "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "react-email": "^6.0.8",
-    "react-resizable-panels": "^4.11.1",
-    "zod": "^4.4.3",
-    "zustand": "^5.0.13"
-  },
   "prettier": {
     "printWidth": 150,
     "semi": false,
@@ -54,9 +28,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
@@ -70,7 +44,6 @@
     "lint-staged": "^17.0.4",
     "prettier": "^3.8.3",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.59.3",
-    "vite": "^6.0.0"
+    "typescript-eslint": "^8.59.3"
   }
 }

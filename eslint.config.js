@@ -8,7 +8,7 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules'] },
+  { ignores: ['**/dist/**', '**/node_modules/**'] },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -56,15 +56,23 @@ export default tseslint.config(
       'import/order': [
         'error',
         {
-          groups: ['builtin', 'external', 'internal'],
+          groups: ['builtin', 'external', 'internal', ['parent', 'sibling', 'index']],
+          pathGroups: [
+            { pattern: '@musoftware/mail-editor', group: 'internal' },
+            { pattern: '@musoftware/mail-editor/**', group: 'internal' },
+            { pattern: '@playground/**', group: 'internal' },
+          ],
+          pathGroupsExcludedImportTypes: ['builtin'],
           'newlines-between': 'always',
           alphabetize: { order: 'asc' },
         },
       ],
       'import/no-duplicates': 'error',
       'import/no-cycle': 'error',
+      'import/no-relative-parent-imports': 'error',
       '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports', fixStyle: 'inline-type-imports' }],
       eqeqeq: ['error', 'always', { null: 'ignore' }],
+      'arrow-body-style': ['error', 'as-needed'],
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'react/prop-types': 'off',
       'func-style': ['error', 'expression'],

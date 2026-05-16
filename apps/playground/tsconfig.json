@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "include": ["src", "vite.config.ts"],
+  "compilerOptions": {
+    "paths": {
+      "@playground/*": ["./src/*"],
+      "@musoftware/mail-editor": ["../../packages/mail-editor/src/index.ts"],
+      "@musoftware/mail-editor/*": ["../../packages/mail-editor/src/*"]
+    }
+  }
+}

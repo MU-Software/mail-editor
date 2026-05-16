@@ -1,4 +1,4 @@
-export { MailEditor, type MailEditorProps } from './MailEditor'
+export { MailEditor, type MailEditorHandle, type MailEditorProps } from './MailEditor'
 
 export {
   EmailDocumentSchema,
@@ -23,5 +23,3 @@ export {
 export { parseEmailDocument, stringifyEmailDocument } from './utils/jsonIO'
 
 export { createBlock, createEmptyColumn, createEmptyDocument, createEmptyRow } from './utils/factories'
-
-export { exportHTML } from './render/exportHTML'

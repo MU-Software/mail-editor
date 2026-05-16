@@ -1,7 +1,7 @@
-import { KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight, KeyboardArrowUp, Redo, Save, Send, Undo } from '@mui/icons-material'
+import { KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight, KeyboardArrowUp, Redo, Undo } from '@mui/icons-material'
 import { Box, Button, ScopedCssBaseline, Stack, Tab, Tabs } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { useEffect, useLayoutEffect, useRef, useState, type FC } from 'react'
+import { useEffect, useImperativeHandle, useLayoutEffect, useRef, useState, type FC, type Ref } from 'react'
 import { Group, Panel, Separator, useDefaultLayout, type PanelImperativeHandle } from 'react-resizable-panels'
 
 import { TooltipIconButton } from './components/TooltipIconButton'
@@ -13,6 +13,7 @@ import { SamplePanel } from './panels/SamplePanel'
 import { exportHTML } from './render/exportHTML'
 import { useDocumentStore } from './store/store'
 import type { EmailDocument } from './types/schema'
+import { stringifyEmailDocument } from './utils/jsonIO'
 
 const Resizer = styled(Separator)({
   background: '#ccc',
@@ -35,10 +36,15 @@ const ColumnResizer = styled(Resizer)({
 
 type TabKey = 'sample' | 'json'
 
+export type MailEditorHandle = {
+  exportEmailDocument: () => EmailDocument
+  exportJson: () => string
+  exportHTML: () => Promise<string>
+}
+
 export type MailEditorProps = {
   initialDocument?: EmailDocument
-  onJsonExport?: (doc: EmailDocument) => void
-  onHtmlExport?: (html: string) => void | Promise<void>
+  ref?: Ref<MailEditorHandle>
 }
 
 const PaneHeader: FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -62,13 +68,22 @@ const PaneHeader: FC<{ children: React.ReactNode }> = ({ children }) => (
   </Stack>
 )
 
-export const MailEditor: FC<MailEditorProps> = ({ initialDocument, onJsonExport, onHtmlExport }) => {
+export const MailEditor: FC<MailEditorProps> = ({ initialDocument, ref }) => {
   const { undo, redo, canUndo, canRedo } = useUndo()
   const { resetDocument } = useActions()
   const [tab, setTab] = useState<TabKey>('sample')
-  const [exporting, setExporting] = useState(false)
   const [bottomCollapsed, setBottomCollapsed] = useState(false)
   const [propsCollapsed, setPropsCollapsed] = useState(false)
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      exportEmailDocument: () => useDocumentStore.getState().doc,
+      exportJson: () => stringifyEmailDocument(useDocumentStore.getState().doc),
+      exportHTML: () => exportHTML(useDocumentStore.getState().doc),
+    }),
+    [],
+  )
 
   const bottomRef = useRef<PanelImperativeHandle>(null)
   const propsRef = useRef<PanelImperativeHandle>(null)
@@ -97,19 +112,6 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, onJsonExport,
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [undo, redo, canUndo, canRedo])
-
-  const handleJsonExport = () => onJsonExport?.(useDocumentStore.getState().doc)
-
-  const handleHtmlExport = async () => {
-    if (!onHtmlExport) return
-    setExporting(true)
-    try {
-      const html = await exportHTML(useDocumentStore.getState().doc)
-      await onHtmlExport(html)
-    } finally {
-      setExporting(false)
-    }
-  }
 
   const toggleBottomPanel = () => {
     const p = bottomRef.current
@@ -141,25 +143,7 @@ export const MailEditor: FC<MailEditorProps> = ({ initialDocument, onJsonExport,
         <Panel id="main" defaultSize={75} minSize={40}>
           <Stack sx={{ height: '100%', background: '#f4f4f4' }}>
             <PaneHeader>
-              <Stack direction="row" spacing={1}>
-                {onJsonExport && (
-                  <Button size="small" variant="outlined" startIcon={<Save />} onClick={handleJsonExport} sx={{ textTransform: 'none' }}>
-                    저장
-                  </Button>
-                )}
-                {onHtmlExport && (
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    startIcon={<Send />}
-                    onClick={() => void handleHtmlExport()}
-                    disabled={exporting}
-                    sx={{ textTransform: 'none' }}
-                  >
-                    {exporting ? '내보내는 중...' : 'HTML로 내보내기'}
-                  </Button>
-                )}
-              </Stack>
+              <Box />
               <Stack direction="row" spacing={1}>
                 <Button size="small" startIcon={<Undo />} onClick={undo} disabled={!canUndo} sx={{ textTransform: 'none' }}>
                   Undo

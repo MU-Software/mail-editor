@@ -38,6 +38,12 @@
     "zod": "^4.4.3",
     "zustand": "^5.0.13"
   },
+  "prettier": {
+    "printWidth": 150,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --fix --max-warnings 0"

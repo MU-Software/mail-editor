@@ -1,4 +1,4 @@
-import { VAR_PATTERN } from '@musoftware/mail-editor/render/variables'
+import { VAR_PATTERN } from '@mu-software/mail-editor/render/variables'
 
 export type ValidationOk = { ok: true }
 export type ValidationFail = { ok: false; message: string }

@@ -1,9 +1,8 @@
+import { useDocumentStore } from '@mu-software/mail-editor/store/store'
+import type { DocumentActions, Selection, UndoControls } from '@mu-software/mail-editor/store/types'
+import type { Block, Column, EmailDocument, Row } from '@mu-software/mail-editor/types/schema'
+import { findBlock, findColumn, findRow } from '@mu-software/mail-editor/utils/locate'
 import { useShallow } from 'zustand/shallow'
-
-import { useDocumentStore } from '@musoftware/mail-editor/store/store'
-import type { DocumentActions, Selection, UndoControls } from '@musoftware/mail-editor/store/types'
-import type { Block, Column, EmailDocument, Row } from '@musoftware/mail-editor/types/schema'
-import { findBlock, findColumn, findRow } from '@musoftware/mail-editor/utils/locate'
 
 export const useDocument = <T>(selector: (doc: EmailDocument) => T): T => useDocumentStore((state) => selector(state.doc))
 

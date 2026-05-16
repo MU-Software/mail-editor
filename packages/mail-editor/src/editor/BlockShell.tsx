@@ -1,11 +1,10 @@
+import { TooltipIconButton } from '@mu-software/mail-editor/components/TooltipIconButton'
+import { useActions, useSelectedBlockId } from '@mu-software/mail-editor/hooks/useDocument'
+import type { Block } from '@mu-software/mail-editor/types/schema'
+import { stopAnd } from '@mu-software/mail-editor/utils/events'
 import { Add, ArrowDownward, ArrowUpward, Build, Close, ContentCopy } from '@mui/icons-material'
 import { Box } from '@mui/material'
 import { useState, type FC, type MouseEvent, type ReactNode } from 'react'
-
-import { TooltipIconButton } from '@musoftware/mail-editor/components/TooltipIconButton'
-import { useActions, useSelectedBlockId } from '@musoftware/mail-editor/hooks/useDocument'
-import type { Block } from '@musoftware/mail-editor/types/schema'
-import { stopAnd } from '@musoftware/mail-editor/utils/events'
 
 import { BlockTypeMenu } from './BlockTypeMenu'
 import { HoverToolbar, SelectableShell } from './SelectableShell'

@@ -1,6 +1,5 @@
+import type { EmailDocument } from '@mu-software/mail-editor/types/schema'
 import { render } from '@react-email/render'
-
-import type { EmailDocument } from '@musoftware/mail-editor/types/schema'
 
 import { EmailDocumentRenderer } from './EmailRenderer'
 

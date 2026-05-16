@@ -1,7 +1,6 @@
+import { stringifyEmailDocument, type EmailDocument } from '@mu-software/mail-editor'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, TextField } from '@mui/material'
 import { useState, type FC } from 'react'
-
-import { stringifyEmailDocument, type EmailDocument } from '@musoftware/mail-editor'
 
 export const JsonExportDialog: FC<{
   doc: EmailDocument | null

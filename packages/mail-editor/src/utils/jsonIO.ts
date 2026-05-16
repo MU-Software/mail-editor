@@ -1,4 +1,4 @@
-import { EmailDocumentSchema, type EmailDocument } from '@musoftware/mail-editor/types/schema'
+import { EmailDocumentSchema, type EmailDocument } from '@mu-software/mail-editor/types/schema'
 
 export const parseEmailDocument = (json: string): EmailDocument => {
   let parsed: unknown

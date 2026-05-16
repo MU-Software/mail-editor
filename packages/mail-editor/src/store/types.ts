@@ -1,4 +1,4 @@
-import type { Block, EmailDocument } from '@musoftware/mail-editor/types/schema'
+import type { Block, EmailDocument } from '@mu-software/mail-editor/types/schema'
 
 export type Selection = { kind: 'document' } | { kind: 'row'; id: string } | { kind: 'column'; id: string } | { kind: 'block'; id: string }
 

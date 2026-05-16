@@ -1,7 +1,6 @@
+import { parseEmailDocument, type EmailDocument } from '@mu-software/mail-editor'
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from '@mui/material'
 import { useState, type FC } from 'react'
-
-import { parseEmailDocument, type EmailDocument } from '@musoftware/mail-editor'
 
 export const JsonImportDialog: FC<{
   open: boolean

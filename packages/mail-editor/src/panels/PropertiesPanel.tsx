@@ -1,8 +1,7 @@
+import { COLUMN_PROPERTIES, DOCUMENT_PROPERTIES, ROW_PROPERTIES, findBlockTypeDef, type PropertyDef } from '@mu-software/mail-editor/editor/schemas'
+import { useSelectedTarget } from '@mu-software/mail-editor/hooks/useDocument'
+import type { Selection } from '@mu-software/mail-editor/store/types'
 import { Box, Stack, Typography } from '@mui/material'
-
-import { COLUMN_PROPERTIES, DOCUMENT_PROPERTIES, ROW_PROPERTIES, findBlockTypeDef, type PropertyDef } from '@musoftware/mail-editor/editor/schemas'
-import { useSelectedTarget } from '@musoftware/mail-editor/hooks/useDocument'
-import type { Selection } from '@musoftware/mail-editor/store/types'
 
 import { PropertiesForm } from './forms/PropertiesForm'
 

@@ -1,6 +1,3 @@
-import { Button, Heading, Hr, Img, Link, Text } from '@react-email/components'
-import { Fragment, type ReactElement } from 'react'
-
 import type {
   Block,
   ButtonBlock,
@@ -12,7 +9,9 @@ import type {
   SpacerBlock,
   TextBlock,
   UnorderedListBlock,
-} from '@musoftware/mail-editor/types/schema'
+} from '@mu-software/mail-editor/types/schema'
+import { Button, Heading, Hr, Img, Link, Text } from '@react-email/components'
+import { Fragment, type ReactElement } from 'react'
 
 import { buttonContainerStyle, buttonStyle, headingStyle, hrStyle, imageContainerStyle, imageInlineStyle, listStyle, textStyle } from './styles'
 import { substituteVariables } from './variables'

@@ -8,7 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@playground': resolve(__dirname, 'src'),
-      '@musoftware/mail-editor': resolve(__dirname, '../../packages/mail-editor/src'),
+      '@mu-software/mail-editor': resolve(__dirname, '../../packages/mail-editor/src'),
     },
   },
 })

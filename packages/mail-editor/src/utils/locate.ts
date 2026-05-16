@@ -1,4 +1,4 @@
-import type { Block, Column, EmailDocument, Row } from '@musoftware/mail-editor/types/schema'
+import type { Block, Column, EmailDocument, Row } from '@mu-software/mail-editor/types/schema'
 
 export const findRow = (doc: EmailDocument, rowId: string): Row | undefined => doc.rows.find((r) => r.id === rowId)
 

@@ -1,7 +1,6 @@
+import type { EmailDocument, Row as RowT } from '@mu-software/mail-editor/types/schema'
 import { Body, Column, Container, Head, Html, Preview, Row, Section } from '@react-email/components'
 import { cloneElement, type FC } from 'react'
-
-import type { EmailDocument, Row as RowT } from '@musoftware/mail-editor/types/schema'
 
 import { renderBlock } from './blocks'
 import { columnPadding, columnTdStyle, rowSectionStyle } from './styles'

@@ -1,10 +1,9 @@
+import { PROPERTY_GROUP_LABELS, PROPERTY_GROUP_ORDER, groupProperties, type PropertyDef } from '@mu-software/mail-editor/editor/schemas'
+import { useActions } from '@mu-software/mail-editor/hooks/useDocument'
+import type { Selection } from '@mu-software/mail-editor/store/types'
+import { getAtPath } from '@mu-software/mail-editor/utils/path'
 import { Box, Stack, Typography } from '@mui/material'
 import type { FC } from 'react'
-
-import { PROPERTY_GROUP_LABELS, PROPERTY_GROUP_ORDER, groupProperties, type PropertyDef } from '@musoftware/mail-editor/editor/schemas'
-import { useActions } from '@musoftware/mail-editor/hooks/useDocument'
-import type { Selection } from '@musoftware/mail-editor/store/types'
-import { getAtPath } from '@musoftware/mail-editor/utils/path'
 
 import {
   DeferredColorField,

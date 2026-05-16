@@ -3,7 +3,7 @@
   "include": ["src", "vite.config.ts"],
   "compilerOptions": {
     "paths": {
-      "@musoftware/mail-editor/*": ["./src/*"]
+      "@mu-software/mail-editor/*": ["./src/*"]
     }
   }
 }

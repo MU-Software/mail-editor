@@ -1,6 +1,5 @@
+import type { ButtonBlock, Column, HeadingBlock, HrBlock, ImageBlock, Row } from '@mu-software/mail-editor/types/schema'
 import type { CSSProperties } from 'react'
-
-import type { ButtonBlock, Column, HeadingBlock, HrBlock, ImageBlock, Row } from '@musoftware/mail-editor/types/schema'
 
 type TextLikeStyles = {
   color?: string

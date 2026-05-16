@@ -1,5 +1,5 @@
-import { VAR_PATTERN } from '@musoftware/mail-editor/render/variables'
-import type { EmailDocument } from '@musoftware/mail-editor/types/schema'
+import { VAR_PATTERN } from '@mu-software/mail-editor/render/variables'
+import type { EmailDocument } from '@mu-software/mail-editor/types/schema'
 
 const collect = (text: string | undefined, into: Set<string>) => {
   if (!text) return

@@ -1,9 +1,5 @@
-import { current } from 'immer'
-import { create } from 'zustand'
-import { immer } from 'zustand/middleware/immer'
-
-import type { EmailDocument } from '@musoftware/mail-editor/types/schema'
-import { swapInPlace } from '@musoftware/mail-editor/utils/array'
+import type { EmailDocument } from '@mu-software/mail-editor/types/schema'
+import { swapInPlace } from '@mu-software/mail-editor/utils/array'
 import {
   cloneBlockWithNewId,
   cloneRowWithNewIds,
@@ -11,9 +7,12 @@ import {
   createEmptyColumn,
   createEmptyDocument,
   createEmptyRow,
-} from '@musoftware/mail-editor/utils/factories'
-import { findBlockContext, findColumn, findColumnWithRow, findRow } from '@musoftware/mail-editor/utils/locate'
-import { getAtPath, setAtPath } from '@musoftware/mail-editor/utils/path'
+} from '@mu-software/mail-editor/utils/factories'
+import { findBlockContext, findColumn, findColumnWithRow, findRow } from '@mu-software/mail-editor/utils/locate'
+import { getAtPath, setAtPath } from '@mu-software/mail-editor/utils/path'
+import { current } from 'immer'
+import { create } from 'zustand'
+import { immer } from 'zustand/middleware/immer'
 
 import type { DocumentActions, Selection } from './types'
 

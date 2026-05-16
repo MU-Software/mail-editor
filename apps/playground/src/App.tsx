@@ -1,7 +1,6 @@
+import { MailEditor, type EmailDocument } from '@mu-software/mail-editor'
 import { Box, Snackbar } from '@mui/material'
 import { useState, type FC } from 'react'
-
-import { MailEditor, type EmailDocument } from '@musoftware/mail-editor'
 
 import { AppBar } from './AppBar'
 import { JsonExportDialog } from './JsonExportDialog'

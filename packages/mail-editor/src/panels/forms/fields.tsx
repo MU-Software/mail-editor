@@ -1,11 +1,10 @@
+import { TooltipIconButton } from '@mu-software/mail-editor/components/TooltipIconButton'
+import { InlineTextEditor } from '@mu-software/mail-editor/editor/InlineTextEditor'
+import type { SelectOption } from '@mu-software/mail-editor/editor/schemas'
+import { withSwapped } from '@mu-software/mail-editor/utils/array'
 import { Add, ArrowDownward, ArrowUpward, Close } from '@mui/icons-material'
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from '@mui/material'
 import { useEffect, useRef, useState, type FC } from 'react'
-
-import { TooltipIconButton } from '@musoftware/mail-editor/components/TooltipIconButton'
-import { InlineTextEditor } from '@musoftware/mail-editor/editor/InlineTextEditor'
-import type { SelectOption } from '@musoftware/mail-editor/editor/schemas'
-import { withSwapped } from '@musoftware/mail-editor/utils/array'
 
 type ClickToEditFieldProps = {
   label: string

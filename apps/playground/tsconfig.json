@@ -4,8 +4,8 @@
   "compilerOptions": {
     "paths": {
       "@playground/*": ["./src/*"],
-      "@musoftware/mail-editor": ["../../packages/mail-editor/src/index.ts"],
-      "@musoftware/mail-editor/*": ["../../packages/mail-editor/src/*"]
+      "@mu-software/mail-editor": ["../../packages/mail-editor/src/index.ts"],
+      "@mu-software/mail-editor/*": ["../../packages/mail-editor/src/*"]
     }
   }
 }

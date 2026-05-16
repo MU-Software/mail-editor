@@ -1,9 +1,8 @@
+import { useActions } from '@mu-software/mail-editor/hooks/useDocument'
+import { renderBlock } from '@mu-software/mail-editor/render/blocks'
+import { buttonContainerStyle, buttonStyle, headingStyle, textStyle } from '@mu-software/mail-editor/render/styles'
+import type { Block, ButtonBlock, HeadingBlock, TextBlock } from '@mu-software/mail-editor/types/schema'
 import { cloneElement, memo, useState, type CSSProperties, type FC, type MouseEvent, type ReactElement } from 'react'
-
-import { useActions } from '@musoftware/mail-editor/hooks/useDocument'
-import { renderBlock } from '@musoftware/mail-editor/render/blocks'
-import { buttonContainerStyle, buttonStyle, headingStyle, textStyle } from '@musoftware/mail-editor/render/styles'
-import type { Block, ButtonBlock, HeadingBlock, TextBlock } from '@musoftware/mail-editor/types/schema'
 
 import { BlockShell } from './BlockShell'
 import { InlineTextEditor } from './InlineTextEditor'

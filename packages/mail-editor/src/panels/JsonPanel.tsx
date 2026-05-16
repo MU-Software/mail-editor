@@ -1,6 +1,5 @@
+import { useDocument } from '@mu-software/mail-editor/hooks/useDocument'
 import { Box } from '@mui/material'
-
-import { useDocument } from '@musoftware/mail-editor/hooks/useDocument'
 
 export const JsonPanel = () => {
   const doc = useDocument((d) => d)

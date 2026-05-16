@@ -1,3 +1,5 @@
+import { TooltipIconButton } from '@mu-software/mail-editor/components/TooltipIconButton'
+import { validateHref, validateVariableMarkIntegrity } from '@mu-software/mail-editor/utils/validation'
 import {
   FormatBold,
   FormatColorText,
@@ -17,9 +19,6 @@ import UnderlineExt from '@tiptap/extension-underline'
 import { type Editor, EditorContent, Extension, useEditor, useEditorState } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useEffect, useRef, useState, type CSSProperties, type FC } from 'react'
-
-import { TooltipIconButton } from '@musoftware/mail-editor/components/TooltipIconButton'
-import { validateHref, validateVariableMarkIntegrity } from '@musoftware/mail-editor/utils/validation'
 
 const DEFAULT_COLOR = '#000000'
 const DEFAULT_HIGHLIGHT = '#fff7a8'

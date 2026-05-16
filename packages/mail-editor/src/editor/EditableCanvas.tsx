@@ -1,8 +1,7 @@
+import { useActions, useDocument, useSelection, useShowRawVariables } from '@mu-software/mail-editor/hooks/useDocument'
 import { Add } from '@mui/icons-material'
 import { Box, Button, Stack } from '@mui/material'
 import { useState, type FC, type MouseEvent } from 'react'
-
-import { useActions, useDocument, useSelection, useShowRawVariables } from '@musoftware/mail-editor/hooks/useDocument'
 
 import { BlockTypeMenu } from './BlockTypeMenu'
 import { EditableRow } from './EditableRow'

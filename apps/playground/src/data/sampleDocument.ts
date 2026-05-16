@@ -1,4 +1,4 @@
-import { EmailDocumentSchema } from '@musoftware/mail-editor'
+import { EmailDocumentSchema } from '@mu-software/mail-editor'
 
 import sample from './sampleDocument.json'
 

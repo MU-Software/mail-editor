@@ -1,8 +1,7 @@
+import type { Block } from '@mu-software/mail-editor/types/schema'
+import { validateHref, warnIfAltMissing, type ValidationResult } from '@mu-software/mail-editor/utils/validation'
 import { FormatListBulleted, FormatListNumbered, HorizontalRule, Image, Notes, SmartButton, SpaceBar, TextFields, Title } from '@mui/icons-material'
 import type { ReactElement } from 'react'
-
-import type { Block } from '@musoftware/mail-editor/types/schema'
-import { validateHref, warnIfAltMissing, type ValidationResult } from '@musoftware/mail-editor/utils/validation'
 
 export type PropertyType = 'text' | 'number' | 'color' | 'select' | 'boolean' | 'stringList' | 'descriptionItems'
 

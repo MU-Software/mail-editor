@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "pnpm --filter playground dev",
     "build": "pnpm -r build",
-    "build:package": "pnpm --filter @musoftware/mail-editor build",
+    "build:package": "pnpm --filter @mu-software/mail-editor build",
     "build:playground": "pnpm --filter playground build",
     "lint": "eslint .",
     "prepare": "husky"
@@ -18,6 +21,11 @@
     "singleQuote": true,
     "trailingComma": "all"
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "lint-staged": {
     "*.{ts,tsx}": [
       "eslint --fix --max-warnings 0"
@@ -27,6 +35,8 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.0.1",
+    "@commitlint/config-conventional": "^21.0.1",
     "@eslint/js": "^9.39.4",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",

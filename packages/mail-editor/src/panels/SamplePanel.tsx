@@ -1,10 +1,9 @@
+import { TooltipIconButton } from '@mu-software/mail-editor/components/TooltipIconButton'
+import { useActions, useDocument, useSetShowRawVariables, useShowRawVariables } from '@mu-software/mail-editor/hooks/useDocument'
+import { extractVariableNames } from '@mu-software/mail-editor/utils/extractVariables'
 import { Close } from '@mui/icons-material'
 import { Box, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material'
 import { useMemo } from 'react'
-
-import { TooltipIconButton } from '@musoftware/mail-editor/components/TooltipIconButton'
-import { useActions, useDocument, useSetShowRawVariables, useShowRawVariables } from '@musoftware/mail-editor/hooks/useDocument'
-import { extractVariableNames } from '@musoftware/mail-editor/utils/extractVariables'
 
 export const SamplePanel = () => {
   const doc = useDocument((d) => d)

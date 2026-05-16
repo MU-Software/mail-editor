@@ -1,7 +1,6 @@
+import type { Block } from '@mu-software/mail-editor/types/schema'
 import { ListItemIcon, ListItemText, Menu, MenuItem, type PopoverOrigin } from '@mui/material'
 import type { FC } from 'react'
-
-import type { Block } from '@musoftware/mail-editor/types/schema'
 
 import { BLOCK_TYPES } from './schemas'
 

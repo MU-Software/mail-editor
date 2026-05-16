@@ -1,7 +1,6 @@
+import { useActions } from '@mu-software/mail-editor/hooks/useDocument'
 import { Box, Stack } from '@mui/material'
 import { type FC, type MouseEvent, type ReactNode } from 'react'
-
-import { useActions } from '@musoftware/mail-editor/hooks/useDocument'
 
 type SelectableKind = 'row' | 'column' | 'block'
 

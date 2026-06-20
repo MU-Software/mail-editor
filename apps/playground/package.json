@@ -13,10 +13,10 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mu-software/mail-editor": "workspace:*",
-    "@mui/icons-material": "^9.0.1",
-    "@mui/material": "^9.0.1",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "@mui/icons-material": "^9.1.1",
+    "@mui/material": "^9.1.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.2",

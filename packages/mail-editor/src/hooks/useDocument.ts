@@ -19,11 +19,7 @@ export const useSelectedRowId = (): string | null => useDocumentStore((state) =>
 export const useSelectedColumnId = (): string | null => useDocumentStore((state) => (state.selection?.kind === 'column' ? state.selection.id : null))
 
 export const useSelectedTarget = ():
-  | { kind: 'document'; obj: EmailDocument }
-  | { kind: 'row'; obj: Row }
-  | { kind: 'column'; obj: Column }
-  | { kind: 'block'; obj: Block }
-  | null =>
+  { kind: 'document'; obj: EmailDocument } | { kind: 'row'; obj: Row } | { kind: 'column'; obj: Column } | { kind: 'block'; obj: Block } | null =>
   useDocumentStore(
     useShallow((state) => {
       const sel = state.selection

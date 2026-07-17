@@ -172,6 +172,7 @@ export const EmailDocumentSchema = z.object({
   meta: z.object({
     subject: z.string().optional(),
     preview: z.string().optional(),
+    lang: z.string().optional(),
   }),
   styles: z.object({
     backgroundColor: z.string().optional(),

@@ -14,8 +14,8 @@ const presentationTable: ComponentPropsWithoutRef<'table'> = {
 
 type Styleable = { style?: CSSProperties; children?: ReactNode }
 
-export const Html = ({ children }: { children?: ReactNode }) => (
-  <html lang="en" dir="ltr">
+export const Html = ({ lang = 'en', dir = 'ltr', children }: { lang?: string; dir?: string; children?: ReactNode }) => (
+  <html lang={lang} dir={dir}>
     {children}
   </html>
 )

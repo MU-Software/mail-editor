@@ -29,7 +29,7 @@ const renderRow = (row: RowT, sample: Sample) => {
 }
 
 export const EmailDocumentRenderer: FC<{ doc: EmailDocument }> = ({ doc }) => (
-  <Html>
+  <Html lang={doc.meta.lang ?? 'ko'}>
     <Head>{doc.meta.preview ? <Preview>{doc.meta.preview}</Preview> : null}</Head>
     <Body
       style={{

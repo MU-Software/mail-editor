@@ -286,6 +286,12 @@ export const DOCUMENT_PROPERTIES: readonly PropertyDef[] = [
     description: '받은편지함 미리보기',
   },
   {
+    path: ['meta', 'lang'],
+    label: '언어 (lang)',
+    type: 'text',
+    description: '미설정 시 ko (예: ko, en, ja)',
+  },
+  {
     path: ['styles', 'backgroundColor'],
     label: '배경색',
     type: 'color',

@@ -51,7 +51,16 @@ const parsePx = (value: unknown): number | undefined => {
   return undefined
 }
 
-const stripTags = (html: string): string => html.replace(/<[^>]*>/g, '')
+// The VML button is assembled as a raw HTML string (unlike the React-rendered
+// non-Outlook <a>), so every user-derived value must be escaped before it is
+// interpolated in, or it could inject markup into the VML.
+const escapeHtml = (text: string): string => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+const escapeAttr = (text: string): string => escapeHtml(text).replace(/"/g, '&quot;')
+
+// Flatten the label to safe plain text for the VML <center>: drop tags for
+// readability, then escape so any residue is inert (Outlook can't render rich HTML).
+const vmlText = (html: string): string => escapeHtml(html.replace(/<[^>]*>/g, ''))
 
 // Outlook-only spacer: `letter-spacing` opens the horizontal gap while
 // `mso-font-width` collapses the padding character; `mso-text-raise` nudges the
@@ -78,13 +87,13 @@ export const Button = ({ style, label, href, target = '_blank', rel = 'noopener 
     const strokeColor = typeof style?.borderColor === 'string' ? style.borderColor : undefined
     const strokeWeight = parsePx(style?.borderWidth)
     const textColor = typeof style?.color === 'string' ? style.color : '#000000'
-    const stroke = strokeColor ? `strokecolor="${strokeColor}"${strokeWeight ? ` strokeweight="${strokeWeight}px"` : ''}` : 'stroke="f"'
+    const stroke = strokeColor ? `strokecolor="${escapeAttr(strokeColor)}"${strokeWeight ? ` strokeweight="${strokeWeight}px"` : ''}` : 'stroke="f"'
     const vml =
       `<!--[if mso]>` +
       `<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" ` +
-      `href="${href ?? '#'}" style="height:${height}px;v-text-anchor:middle;width:${width}px;" arcsize="${arcsize}%" ${stroke}${fill ? ` fillcolor="${fill}"` : ''}>` +
+      `href="${escapeAttr(href ?? '#')}" style="height:${height}px;v-text-anchor:middle;width:${width}px;" arcsize="${arcsize}%" ${stroke}${fill ? ` fillcolor="${escapeAttr(fill)}"` : ''}>` +
       `<w:anchorlock/>` +
-      `<center style="color:${textColor};font-family:Arial,sans-serif;font-size:${fontSize}px;">${stripTags(labelHtml)}</center>` +
+      `<center style="color:${escapeAttr(textColor)};font-family:Arial,sans-serif;font-size:${fontSize}px;">${vmlText(labelHtml)}</center>` +
       `</v:roundrect>` +
       `<![endif]-->`
     const anchorStyle: MsoStyle = {

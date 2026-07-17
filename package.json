@@ -12,6 +12,7 @@
     "build:package": "pnpm --filter @mu-software/mail-editor build",
     "build:playground": "pnpm --filter playground build",
     "lint": "eslint .",
+    "codeql": "bash scripts/codeql-local.sh",
     "prepare": "husky"
   },
   "packageManager": "pnpm@10.26.2",

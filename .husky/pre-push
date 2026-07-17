@@ -1,0 +1,8 @@
+# Run CodeQL locally (same suite as CI: security-extended) before pushing.
+# Skips gracefully when the CodeQL CLI isn't installed — CI remains the backstop.
+# Bypass a one-off push with: git push --no-verify
+if command -v codeql >/dev/null 2>&1; then
+  pnpm codeql
+else
+  echo "pre-push: CodeQL CLI not found — skipping local scan (install with: brew install --cask codeql)"
+fi

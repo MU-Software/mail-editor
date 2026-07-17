@@ -42,8 +42,10 @@ export const Body = ({ style, children }: Styleable) => (
   </body>
 )
 
+// Fluid up to the caller's max-width: the `width="100%"` attribute (from presentationTable)
+// lets it shrink on narrow screens, while the caller's `maxWidth` caps it on wide ones.
 export const Container = ({ style, children }: Styleable) => (
-  <table {...presentationTable} style={{ maxWidth: '600px', ...style }}>
+  <table {...presentationTable} style={style}>
     <tbody>
       <tr style={{ width: '100%' }}>
         <td>{children}</td>

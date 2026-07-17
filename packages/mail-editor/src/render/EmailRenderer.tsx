@@ -40,7 +40,7 @@ export const EmailDocumentRenderer: FC<{ doc: EmailDocument }> = ({ doc }) => (
     >
       <Container
         style={{
-          width: doc.styles.width ?? 600,
+          maxWidth: doc.styles.width ?? 600,
           backgroundColor: doc.styles.contentBackgroundColor,
           margin: '0 auto',
         }}

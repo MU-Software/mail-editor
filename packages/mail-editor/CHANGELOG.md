@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/MU-Software/mail-editor/compare/v0.3.0...v0.4.0) (2026-07-17)
+
+
+### Features
+
+* **mail-editor:** add fixed-width button with Outlook VML fallback ([#33](https://github.com/MU-Software/mail-editor/issues/33)) ([a0a8974](https://github.com/MU-Software/mail-editor/commit/a0a8974082bfd8ff9ffe7a36200a99fc45361e07))
+
 ## [0.3.0](https://github.com/MU-Software/mail-editor/compare/v0.2.0...v0.3.0) (2026-05-16)
 
 

@@ -147,30 +147,51 @@ export const DeferredNumberField: FC<DeferredNumberFieldProps> = ({ label, value
 
 type DeferredColorFieldProps = {
   label: string
-  value: string
-  onCommit: (v: string) => void
+  // The actual stored value; `undefined` means the color is not set (transparent / inherited).
+  value: string | undefined
+  // Color the native picker starts from while the field is unset (never committed on its own).
+  seed: string
+  onCommit: (v: string | undefined) => void
 }
 
-export const DeferredColorField: FC<DeferredColorFieldProps> = ({ label, value, onCommit }) => {
-  const binding = useImeSafeBinding(value, onCommit)
+export const DeferredColorField: FC<DeferredColorFieldProps> = ({ label, value, seed, onCommit }) => {
+  const isSet = value !== undefined && value !== ''
+  const binding = useImeSafeBinding(value ?? '', (v) => onCommit(v === '' ? undefined : v))
   return (
     <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-      <input
-        type="color"
-        value={binding.value}
-        onChange={binding.onChange}
-        style={{
-          width: 36,
-          height: 36,
-          border: '1px solid rgba(0,0,0,0.23)',
-          borderRadius: 4,
-          padding: 0,
-          cursor: 'pointer',
-          background: 'transparent',
-          flexShrink: 0,
-        }}
-      />
-      <TextField label={label} {...binding} size="small" fullWidth />
+      <Box sx={{ position: 'relative', width: 36, height: 36, flexShrink: 0 }}>
+        <input
+          type="color"
+          aria-label={`${label} 색상 선택`}
+          value={isSet ? value : seed}
+          onChange={(e) => onCommit(e.target.value)}
+          style={{
+            width: 36,
+            height: 36,
+            border: '1px solid rgba(0,0,0,0.23)',
+            borderRadius: 4,
+            padding: 0,
+            cursor: 'pointer',
+            background: 'transparent',
+            display: 'block',
+          }}
+        />
+        {/* Diagonal "no color" slash while unset, so the seeded swatch isn't mistaken for an applied color. */}
+        {!isSet && (
+          <Box
+            aria-hidden
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '4px',
+              pointerEvents: 'none',
+              background: 'linear-gradient(to top right, transparent 0 44%, #d32f2f 44% 56%, transparent 56% 100%)',
+            }}
+          />
+        )}
+      </Box>
+      <TextField label={label} {...binding} placeholder="(미설정)" size="small" fullWidth />
+      {isSet && <TooltipIconButton title="색상 지우기" icon={Close} onClick={() => onCommit(undefined)} />}
     </Stack>
   )
 }

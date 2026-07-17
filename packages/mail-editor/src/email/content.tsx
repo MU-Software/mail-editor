@@ -4,7 +4,7 @@ import { type ComponentPropsWithoutRef, type CSSProperties } from 'react'
 // collapse to the label size. These MSO-only `mso-*` properties re-create the
 // padding for Outlook and are stripped by every other client. `mso-padding-alt`
 // and `mso-text-raise` are not in React's CSSProperties, so we widen the type.
-type MsoStyle = CSSProperties & { msoPaddingAlt?: string; msoTextRaise?: string }
+type MsoStyle = CSSProperties & { msoPaddingAlt?: string; msoTextRaise?: string; msoHide?: string }
 
 const defaultTextStyle: CSSProperties = { fontSize: '14px', lineHeight: '24px' }
 
@@ -41,13 +41,68 @@ const parsePadding = (padding: CSSProperties['padding']): { py: number; px: numb
   return { py: parts[0], px: parts[1] }
 }
 
+// Read a CSS length that may arrive as a number or a "16px" string.
+const parsePx = (value: unknown): number | undefined => {
+  if (typeof value === 'number') return value
+  if (typeof value === 'string') {
+    const n = Number.parseFloat(value)
+    return Number.isFinite(n) ? n : undefined
+  }
+  return undefined
+}
+
+const stripTags = (html: string): string => html.replace(/<[^>]*>/g, '')
+
 // Outlook-only spacer: `letter-spacing` opens the horizontal gap while
 // `mso-font-width` collapses the padding character; `mso-text-raise` nudges the
 // label to vertical center. Wrapped in an [if mso] comment so it is inert elsewhere.
 const msoSpacer = (px: number, raise: number): string =>
   `<!--[if mso]><i style="letter-spacing:${px}px;mso-font-width:-100%;${raise ? `mso-text-raise:${raise}px;` : ''}" hidden>&nbsp;</i><![endif]-->`
 
-export const Button = ({ style, children, target = '_blank', rel = 'noopener noreferrer', ...props }: ComponentPropsWithoutRef<'a'>) => {
+type ButtonProps = Omit<ComponentPropsWithoutRef<'a'>, 'children'> & { label?: string }
+
+export const Button = ({ style, label, href, target = '_blank', rel = 'noopener noreferrer', ...props }: ButtonProps) => {
+  const labelHtml = label ?? ''
+  const width = parsePx(style?.width)
+
+  // Fixed width → reliable Outlook VML `<v:roundrect>` (rounded/filled) while the
+  // anchor is hidden from Outlook via `mso-hide:all`. Reliable VML requires an
+  // explicit width; auto-width buttons fall through to the padding-hack branch.
+  if (width !== undefined) {
+    const fontSize = parsePx(style?.fontSize) ?? 16
+    const { py } = parsePadding(style?.padding)
+    const height = 2 * py + Math.round(fontSize * 1.2)
+    const radius = parsePx(style?.borderRadius) ?? 0
+    const arcsize = radius > 0 ? Math.min(50, Math.round((radius / height) * 100)) : 0
+    const fill = typeof style?.backgroundColor === 'string' ? style.backgroundColor : undefined
+    const strokeColor = typeof style?.borderColor === 'string' ? style.borderColor : undefined
+    const strokeWeight = parsePx(style?.borderWidth)
+    const textColor = typeof style?.color === 'string' ? style.color : '#000000'
+    const stroke = strokeColor ? `strokecolor="${strokeColor}"${strokeWeight ? ` strokeweight="${strokeWeight}px"` : ''}` : 'stroke="f"'
+    const vml =
+      `<!--[if mso]>` +
+      `<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" ` +
+      `href="${href ?? '#'}" style="height:${height}px;v-text-anchor:middle;width:${width}px;" arcsize="${arcsize}%" ${stroke}${fill ? ` fillcolor="${fill}"` : ''}>` +
+      `<w:anchorlock/>` +
+      `<center style="color:${textColor};font-family:Arial,sans-serif;font-size:${fontSize}px;">${stripTags(labelHtml)}</center>` +
+      `</v:roundrect>` +
+      `<![endif]-->`
+    const anchorStyle: MsoStyle = {
+      display: 'inline-block',
+      boxSizing: 'border-box',
+      textAlign: 'center',
+      textDecoration: 'none',
+      msoHide: 'all',
+      ...style,
+    }
+    return (
+      <>
+        <span dangerouslySetInnerHTML={{ __html: vml }} />
+        <a href={href} target={target} rel={rel} style={anchorStyle} dangerouslySetInnerHTML={{ __html: labelHtml }} {...props} />
+      </>
+    )
+  }
+
   const { py, px } = parsePadding(style?.padding)
   const raise = Math.round(py * 1.5)
   const anchorStyle: MsoStyle = {
@@ -60,9 +115,9 @@ export const Button = ({ style, children, target = '_blank', rel = 'noopener nor
   }
   const innerStyle: MsoStyle = { display: 'inline-block', maxWidth: '100%', lineHeight: '120%', msoTextRaise: `${Math.round(py * 0.75)}px` }
   return (
-    <a target={target} rel={rel} style={anchorStyle} {...props}>
+    <a href={href} target={target} rel={rel} style={anchorStyle} {...props}>
       <span dangerouslySetInnerHTML={{ __html: msoSpacer(px, raise) }} />
-      <span style={innerStyle}>{children}</span>
+      <span style={innerStyle} dangerouslySetInnerHTML={{ __html: labelHtml }} />
       <span dangerouslySetInnerHTML={{ __html: msoSpacer(px, 0) }} />
     </a>
   )

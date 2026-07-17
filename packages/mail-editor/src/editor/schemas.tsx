@@ -217,6 +217,12 @@ export const BLOCK_TYPES: readonly BlockTypeDef[] = [
         type: 'number',
       },
       {
+        path: ['styles', 'width'],
+        label: '고정 폭 (px)',
+        type: 'number',
+        description: '지정 시 Outlook에서 둥근 버튼(VML) 렌더',
+      },
+      {
         path: ['styles', 'textAlign'],
         label: '정렬',
         type: 'select',

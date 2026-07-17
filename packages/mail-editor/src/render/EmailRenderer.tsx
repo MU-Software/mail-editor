@@ -1,5 +1,5 @@
+import { Body, Column, Container, Head, Html, Preview, Row, Section } from '@mu-software/mail-editor/email'
 import type { EmailDocument, Row as RowT } from '@mu-software/mail-editor/types/schema'
-import { Body, Column, Container, Head, Html, Preview, Row, Section } from '@react-email/components'
 import { cloneElement, type FC } from 'react'
 
 import { renderBlock } from './blocks'

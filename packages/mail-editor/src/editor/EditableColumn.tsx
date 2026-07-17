@@ -1,11 +1,11 @@
 import { TooltipIconButton } from '@mu-software/mail-editor/components/TooltipIconButton'
+import { Column as EmailColumn } from '@mu-software/mail-editor/email'
 import { useActions, useSelectedColumnId } from '@mu-software/mail-editor/hooks/useDocument'
 import { columnPadding, columnTdStyle } from '@mu-software/mail-editor/render/styles'
 import type { Block, Column } from '@mu-software/mail-editor/types/schema'
 import { stopAnd } from '@mu-software/mail-editor/utils/events'
 import { Add, ArrowBack, ArrowForward, Build, Close } from '@mui/icons-material'
 import { Box } from '@mui/material'
-import { Column as EmailColumn } from '@react-email/components'
 import { memo, useState, type FC, type MouseEvent } from 'react'
 
 import { BlockTypeMenu } from './BlockTypeMenu'

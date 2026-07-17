@@ -58,9 +58,20 @@ const escapeHtml = (text: string): string => text.replace(/&/g, '&amp;').replace
 
 const escapeAttr = (text: string): string => escapeHtml(text).replace(/"/g, '&quot;')
 
-// Flatten the label to safe plain text for the VML <center>: drop tags for
-// readability, then escape so any residue is inert (Outlook can't render rich HTML).
-const vmlText = (html: string): string => escapeHtml(html.replace(/<[^>]*>/g, ''))
+// Flatten the label to safe plain text for the VML <center> (Outlook can't render
+// rich HTML). Tags are stripped char-by-char — a single regex pass can leave an
+// unclosed `<tag`, so we drop everything between `<` and `>` (or to the end) — then
+// the result is escaped so nothing it contains can inject markup.
+const vmlText = (html: string): string => {
+  let out = ''
+  let inTag = false
+  for (const ch of html) {
+    if (ch === '<') inTag = true
+    else if (ch === '>') inTag = false
+    else if (!inTag) out += ch
+  }
+  return escapeHtml(out)
+}
 
 // Outlook-only spacer: `letter-spacing` opens the horizontal gap while
 // `mso-font-width` collapses the padding character; `mso-text-raise` nudges the

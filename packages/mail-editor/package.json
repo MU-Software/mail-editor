@@ -44,7 +44,6 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^9.0.1",
     "@mui/material": "^9.0.1",
-    "@react-email/components": "^1.0.12",
     "@react-email/render": "^2.0.8",
     "@tiptap/extension-color": "^3.23.4",
     "@tiptap/extension-highlight": "^3.23.4",

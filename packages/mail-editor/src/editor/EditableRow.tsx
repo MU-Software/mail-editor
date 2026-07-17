@@ -1,9 +1,9 @@
 import { TooltipIconButton } from '@mu-software/mail-editor/components/TooltipIconButton'
+import { Row as EmailRow, Section } from '@mu-software/mail-editor/email'
 import { useActions, useSelectedRowId } from '@mu-software/mail-editor/hooks/useDocument'
 import { rowSectionStyle } from '@mu-software/mail-editor/render/styles'
 import type { Row } from '@mu-software/mail-editor/types/schema'
 import { ArrowDownward, ArrowUpward, Build, Close, ContentCopy } from '@mui/icons-material'
-import { Row as EmailRow, Section } from '@react-email/components'
 import { memo } from 'react'
 
 import { EditableColumn } from './EditableColumn'

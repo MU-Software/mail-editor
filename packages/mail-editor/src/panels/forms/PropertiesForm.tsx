@@ -50,7 +50,9 @@ const FieldFor: FC<FieldForProps> = ({ def, value, onCommit }) => {
     case 'number':
       return <DeferredNumberField label={def.label} value={value as number | undefined} onCommit={onCommit} />
     case 'color':
-      return <DeferredColorField label={def.label} value={(value as string | undefined) ?? (def.default as string) ?? ''} onCommit={onCommit} />
+      return (
+        <DeferredColorField label={def.label} value={value as string | undefined} seed={(def.default as string) ?? '#000000'} onCommit={onCommit} />
+      )
     case 'select':
       if (!def.options) return null
       return <SelectField label={def.label} value={value as string | number | boolean | undefined} options={def.options} onCommit={onCommit} />

@@ -45,13 +45,7 @@ const renderImageBlock = (block: ImageBlock) => {
 
 const renderButtonBlock = (block: ButtonBlock, sample: Sample) => (
   <span style={buttonContainerStyle(block.styles)}>
-    <Button href={block.href} style={buttonStyle(block.styles)}>
-      <span
-        dangerouslySetInnerHTML={{
-          __html: substituteVariables(block.label, sample),
-        }}
-      />
-    </Button>
+    <Button href={block.href} label={substituteVariables(block.label, sample)} style={buttonStyle(block.styles)} />
   </span>
 )
 

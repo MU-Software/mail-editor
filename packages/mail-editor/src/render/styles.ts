@@ -49,6 +49,7 @@ export const buttonStyle = (s: ButtonBlock['styles']): CSSProperties => {
     borderRadius: s.borderRadius,
     padding: paddingValue(s.paddingY, s.paddingX),
     fontSize: s.fontSize !== undefined ? `${s.fontSize}px` : undefined,
+    width: s.width,
     ...borderStyleProps(s),
   }
 }

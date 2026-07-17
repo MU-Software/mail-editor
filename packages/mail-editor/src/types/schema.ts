@@ -67,6 +67,7 @@ const ButtonBlockSchema = z.object({
       paddingY: z.number().optional(),
       paddingX: z.number().optional(),
       fontSize: z.number().optional(),
+      width: z.number().optional(),
       textAlign: TextAlignSchema.optional(),
       ...BorderFieldsSchema,
     })
